@@ -9,6 +9,7 @@ import Navbar from '@/components/navbar';
 
 const Workspace = () => {
   const { id } = useParams();
+
   const [workspace, setWorkspace] = useState(null);
   const [currentFile, setCurrentFile] = useState('');
   const [isRenaming, setIsRenaming] = useState(null);
@@ -113,18 +114,15 @@ const Workspace = () => {
     const updatedDocs = { ...workspace.Docs };
     delete updatedDocs[fileName];
   
-    // Update the workspace state
     const updatedWorkspace = { ...workspace, Docs: updatedDocs };
     
-    // Create a new Y.Doc instance and set the updated workspace
     const ydoc = new Y.Doc();
     const persistence = new IndexeddbPersistence(id, ydoc);
     ydoc.getMap('workspace').set('workspaceData', updatedWorkspace);
   
     persistence.once('synced', () => {
-      // Clean up the old persistence instance if it exists
       if (ydocs.has(fileName)) {
-        ydocs.get(fileName)?.persistence.destroy(); // Close and clean up the persistence instance
+        ydocs.get(fileName)?.persistence.destroy(); 
       }
       
       // Remove the file from the state
@@ -135,7 +133,6 @@ const Workspace = () => {
         return updatedYdocs;
       });
       
-      // Set the current file to the next available file or empty if none
       setCurrentFile(Object.keys(updatedDocs).length > 0 ? Object.keys(updatedDocs)[0] : '');
     });
   };
@@ -165,7 +162,7 @@ const Workspace = () => {
         />
         <div className="flex-1 ml-4">
           {currentFile && ydocs.has(currentFile) ? (
-            <Editor doc={ydocs.get(currentFile)?.doc} />
+            <Editor doc={ydocs.get(currentFile)?.doc}  username={username} />
           ) : (
             <p>No file selected</p>
           )}

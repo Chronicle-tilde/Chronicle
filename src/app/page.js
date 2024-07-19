@@ -36,7 +36,7 @@ const Home = () => {
     const workspaceID = `workspace-${Date.now()}`;
     await addWorkspace(workspaceID);
     setWorkspaces((prev) => [...prev, workspaceID]);
-    router.push(`/workspace/${workspaceID}`);
+    router.push(`/workspace/${workspaceID}?username=${username}`);
   };
 
   const removeWorkspace = async (workspaceID) => {

@@ -4,7 +4,7 @@ import { TiptapExtensions, ydoc, provider } from './tiptapExtensions';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 
-const Editor = ({ docID }) => {
+const Editor = ({ docID, username}) => {
   const [markdownContent, setMarkdownContent] = useState('');
 
   const editor = useEditor({
@@ -16,7 +16,7 @@ const Editor = ({ docID }) => {
       CollaborationCursor.configure({
         provider: provider,
         user: {
-          name: 'ME',
+          name: username,
           color: '#0F0F',
         },
       }),
