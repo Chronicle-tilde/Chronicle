@@ -17,7 +17,7 @@ import { WebrtcProvider } from 'y-webrtc';
 
 const ydoc = new Y.Doc();
 const provider = new WebrtcProvider('Chronicle R-1', ydoc, {
-  signaling: ['https://x40xwmfn-4444.inc1.devtunnels.ms/'],
+  signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
 });
 
 const TiptapExtensions = [

@@ -5,7 +5,7 @@ import { WebrtcProvider } from 'y-webrtc';
 
 export function setupYjs(docID) {
   const ydoc = new Y.Doc();
-  const webrtcProvider = new WebrtcProvider(docID, ydoc);
+  const webrtcProvider = new WebrtcProvider(docID, ydoc,{signaling:['ws://chroniclesignalling.anuragrao.me:6969']});
   const indexeddbProvider = new IndexeddbPersistence(docID, ydoc);
   indexeddbProvider.on('synced', () => {
     console.log('Content has been loaded from IndexedDB');
@@ -29,7 +29,7 @@ export async function addWorkspace(workspaceID) {
   workspacesArray.push([workspaceID]);
 }
 
-export async function deleteWorkspace(workspaceID) {
+export async function deleteWorkspace(workspaceID){
   const ydoc = new Y.Doc();
   const indexeddbProvider = new IndexeddbPersistence('workspaces', ydoc);
   await indexeddbProvider.whenSynced;

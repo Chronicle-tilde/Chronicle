@@ -1,3 +1,6 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react/prop-types */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
@@ -6,20 +9,20 @@ import Sidebar from '../../../components/sidebar';
 import * as Y from 'yjs';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import Navbar from '@/components/navbar';
+import { useRouter } from 'next/navigation';
 
 const Workspace = () => {
+  const router = useRouter();
   const { id } = useParams();
-
   const [workspace, setWorkspace] = useState(null);
   const [currentFile, setCurrentFile] = useState('');
   const [isRenaming, setIsRenaming] = useState(null);
   const [newFileName, setNewFileName] = useState('');
   const [ydocs, setYdocs] = useState(new Map());
-  const [username, setUsername] = useState('');
+  const username = sessionStorage.getItem('username');
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    setUsername(storedUsername || '');
+    if (!id) return;
 
     const ydoc = new Y.Doc();
     const persistence = new IndexeddbPersistence(id, ydoc);
@@ -29,7 +32,7 @@ const Workspace = () => {
       if (!workspaceData || !workspaceData.Docs) {
         workspaceData = {
           WorkspaceTitle: 'My workspace',
-          Nickname: storedUsername,
+          Nickname: '', // Set the username here
           Docs: {},
         };
         ydoc.getMap('workspace').set('workspaceData', workspaceData);
@@ -57,26 +60,25 @@ const Workspace = () => {
     const newFileName = `untitled-${Object.keys(workspace.Docs).length + 1}.md`;
     const newDocID = `doc-${Date.now()}`;
     const newDoc = new Y.Doc();
-  
+
     // Create new IndexeddbPersistence instance for the new document
     const newDocPersistence = new IndexeddbPersistence(newDocID, newDoc);
-  
+
     // Update the workspace with the new file
     const updatedDocs = { ...workspace.Docs, [newFileName]: newDocID };
     const updatedWorkspace = { ...workspace, Docs: updatedDocs };
-  
+
     const ydoc = new Y.Doc();
     const persistence = new IndexeddbPersistence(id, ydoc);
     ydoc.getMap('workspace').set('workspaceData', updatedWorkspace);
-  
+
     persistence.once('synced', () => {
       // Update local state with the new file and its document
       setWorkspace(updatedWorkspace);
-      setYdocs(prev => new Map(prev).set(newFileName, { doc: newDoc, persistence: newDocPersistence }));
+      setYdocs((prev) => new Map(prev).set(newFileName, { doc: newDoc, persistence: newDocPersistence }));
       setCurrentFile(newFileName);
     });
   };
-  
 
   const handleFileNameChange = (index, oldFileName) => {
     if (newFileName.trim() && newFileName !== oldFileName) {
@@ -84,18 +86,18 @@ const Workspace = () => {
       const docID = updatedDocs[oldFileName];
       delete updatedDocs[oldFileName];
       updatedDocs[newFileName] = docID;
-  
+
       const updatedWorkspace = { ...workspace, Docs: updatedDocs };
       const ydoc = new Y.Doc();
       const persistence = new IndexeddbPersistence(id, ydoc);
       ydoc.getMap('workspace').set('workspaceData', updatedWorkspace);
-  
+
       persistence.once('synced', () => {
-        setWorkspace(prevWorkspace => ({
+        setWorkspace((prevWorkspace) => ({
           ...prevWorkspace,
-          Docs: updatedDocs
+          Docs: updatedDocs,
         }));
-        setYdocs(prevYdocs => {
+        setYdocs((prevYdocs) => {
           const updatedYdocs = new Map(prevYdocs);
           const fileData = updatedYdocs.get(oldFileName);
           updatedYdocs.delete(oldFileName);
@@ -108,35 +110,34 @@ const Workspace = () => {
       });
     }
   };
-  
+
   const handleFileDelete = (fileName) => {
     // Create a copy of the workspace Docs to remove the file
     const updatedDocs = { ...workspace.Docs };
     delete updatedDocs[fileName];
-  
+
     const updatedWorkspace = { ...workspace, Docs: updatedDocs };
-    
+
     const ydoc = new Y.Doc();
     const persistence = new IndexeddbPersistence(id, ydoc);
     ydoc.getMap('workspace').set('workspaceData', updatedWorkspace);
-  
+
     persistence.once('synced', () => {
       if (ydocs.has(fileName)) {
-        ydocs.get(fileName)?.persistence.destroy(); 
+        ydocs.get(fileName)?.persistence.destroy();
       }
-      
+
       // Remove the file from the state
       setWorkspace(updatedWorkspace);
-      setYdocs(prev => {
+      setYdocs((prev) => {
         const updatedYdocs = new Map(prev);
         updatedYdocs.delete(fileName);
         return updatedYdocs;
       });
-      
+
       setCurrentFile(Object.keys(updatedDocs).length > 0 ? Object.keys(updatedDocs)[0] : '');
     });
   };
-      
 
   useEffect(() => {
     console.log('Workspace:', workspace);
@@ -146,7 +147,9 @@ const Workspace = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <Navbar username={username} />
+      <div className="relative">
+        <Navbar username={username} />
+      </div>
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
           files={Object.keys(workspace?.Docs || {})}
@@ -159,10 +162,11 @@ const Workspace = () => {
           setIsRenaming={setIsRenaming}
           setNewFileName={setNewFileName}
           newFileName={newFileName}
+          workspacename={id}
         />
         <div className="flex-1 ml-4">
           {currentFile && ydocs.has(currentFile) ? (
-            <Editor doc={ydocs.get(currentFile)?.doc}  username={username} />
+            <Editor doc={ydocs.get(currentFile)?.doc} username={username} />
           ) : (
             <p>No file selected</p>
           )}

@@ -1,10 +1,12 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import { TiptapExtensions, ydoc, provider } from './tiptapExtensions';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 
-const Editor = ({ docID, username}) => {
+const Editor = ({ docID, username }) => {
   const [markdownContent, setMarkdownContent] = useState('');
 
   const editor = useEditor({

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 
 const Sidebar = ({
@@ -11,9 +12,9 @@ const Sidebar = ({
   setIsRenaming,
   setNewFileName,
   newFileName,
+  workspacename,
 }) => {
   const [openOptionsIndex, setOpenOptionsIndex] = useState(null);
-
   const handleOptionsClick = (index) => {
     setOpenOptionsIndex(openOptionsIndex === index ? null : index);
   };
@@ -35,9 +36,11 @@ const Sidebar = ({
 
   return (
     <div className="sidebar mt-10 relative">
-      <button onClick={crabby} className="bg-[#181818] text-[#ff9f00] hover:bg-[#292929]">
-        Add File
+      <p className="text-[#ff9f00]">{workspacename}
+      <button onClick={crabby} className="bg-[#181818] text-[#ff9f00] text-xl hover:bg-[#292929]">
+        +
       </button>
+      </p>
       <div className="file-tree">
         {files.map((file, index) => (
           <div key={index} className={`file-item ${file === currentFile ? 'active' : ''} flex items-center relative`}>
