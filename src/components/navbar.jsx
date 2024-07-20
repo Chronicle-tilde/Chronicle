@@ -28,13 +28,13 @@ const Navbar = ({ username }) => {
 
   return (
     <div className="relative">
-      <div className="flex items-center justify-between h-12 w-auto rounded-3xl bg-[#6b40af] px-4 shadow-md transition-all hover:bg-[#7351a9]">
-        <button className="cursor-pointer font-black text-white" onClick={handleClick}>
+      <div className="flex items-center justify-between h-12 w-auto rounded-3xl bg-[#181818] px-4 shadow-md transition-all hover:bg-[#181818]">
+        <button className="cursor-pointer font-bold bg-[#181818] text-[#7351a9] text-3xl hover:bg-[#181818]" onClick={handleClick}>
           Chronicle
         </button>
         <div className="flex items-center">
-          {username && <div className="text-white font-bold mr-4">{username}</div>}
-          <a href="#" className="text-white" onClick={handleSignOut}>Logout</a>
+          {'{username}' && <div className="text-white font-bold mr-4">What's on you mind today, {username} ?</div>}
+          <a href="#" className="text-[#ff9f00]" onClick={handleSignOut}>Logout</a>
         </div>
       </div>
       {showEasterEgg && (

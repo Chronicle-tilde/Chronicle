@@ -90,7 +90,7 @@ button:hover {
 }
 
 .markdown-editor {
-  background-color: #212121;
+  background-color: #181818;
   color: whitesmoke;
   border-radius: 30px;
   padding: 15px;
@@ -252,12 +252,13 @@ button:hover {
 }
 
 .sidebar {
-  padding: 20px;
-  background-color: rgb(111, 105, 105);
-  border-right: 1px solid #ddd;
+  padding-top: 20px;
+  padding: 5px;
+  padding-right: 100px;
+  background-color: #181818; /*3f3f3f is a nice grey*/
   box-sizing: border-box;
   overflow-y: auto;
-  border-radius: 25px;
+  border-radius: 10px;
 }
 
 .editor {
@@ -269,7 +270,7 @@ button:hover {
 }
 
 .file-tree {
-  margin-top: 20px;
+  margin-top: 5px;
 }
 
 .file-item {
@@ -282,6 +283,7 @@ button:hover {
 
 .file-item span {
   cursor: pointer;
+  color: white;
 }
 
 .file-item.active span {
