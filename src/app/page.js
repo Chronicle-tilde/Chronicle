@@ -52,11 +52,11 @@ const Home = () => {
         <>
           <div>
             <Navbar username={username} />
-            <div className="flex align-middle justify-center flex-wrap gap-4">
+            <div className="flex align-middle justify-center flex-wrap gap-6">
               {workspaces.map((id) => (
-                <div key={id} className="card p-4 shadow-md rounded-lg bg-white">
+                <div key={id} className="card p-6 shadow-lg rounded-xl bg-white transform transition-all duration-300 hover:scale-105">
                   <div className="flex flex-col items-center">
-                    <h2 className="text-lg font-bold">{id}</h2>
+                    <h2 className="text-xl font-bold mb-2">{id}</h2>
                     <div className="flex justify-between mt-4 w-full">
                       <button
                         onClick={() => router.push(`/workspace/${id}`)}

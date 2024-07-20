@@ -20,8 +20,7 @@ const Sidebar = ({ files, currentFile, onFileClick, onFileNameChange, onFileDele
             ) : (
               <>
                 <span onClick={() => onFileClick(file)}>{file}</span>
-                <button onClick={() => setIsRenaming(index)}>Rename</button>
-                <button onClick={() => onFileDelete(file)}>Delete</button>
+                <button className="bg-transparent">... </button>
               </>
             )}
           </div>
