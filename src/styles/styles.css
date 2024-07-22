@@ -21,12 +21,16 @@
 /* Custom Styles */
 body {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  margin: 0;
-  padding: 30px;
-  border-radius: 24px;
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
   background: #181818;
 }
 
+.bg-neutral-gradient {
+  background: linear-gradient(135deg, #2d2d2d, #4b4b4b);
+}
+
+/* Custom Button Styles */
 .workspaceButton {
   background-color: #4f298d;
   border: none;
@@ -59,22 +63,6 @@ button {
 
 button:hover {
   background-color: #7351a9;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .fade-in {
-    opacity: 1;
-    transition: opacity 0.5s ease-in-out;
-  }
-
-  .fade-out {
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-  }
 }
 
 /* Editor and Markdown Styles */
@@ -251,16 +239,6 @@ button:hover {
   flex-grow: 1;
 }
 
-.sidebar {
-  padding-top: 20px;
-  padding: 5px;
-  padding-right: 100px;
-  background-color: #181818; /*3f3f3f is a nice grey*/
-  box-sizing: border-box;
-  overflow-y: auto;
-  border-radius: 10px;
-}
-
 .editor {
   flex-grow: 1;
   padding: 20px;
@@ -320,4 +298,25 @@ button:hover {
 .card .btn-danger {
   background-color: #e3342f;
   color: white;
+}
+
+/* Gradient Animation */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.animated-gradient {
+  background: linear-gradient(45deg, #6366F1, #FBCFE8, #6366F1);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientMove 2s ease infinite;
 }
