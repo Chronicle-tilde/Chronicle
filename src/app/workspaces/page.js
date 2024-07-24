@@ -6,6 +6,7 @@ import Navbar from '../../components/navbar';
 import { useRouter } from 'next/navigation';
 import { addWorkspace, getStoredWorkspaces, deleteWorkspace } from '../../utils/yjs'; // Update if needed
 import '../../styles/styles.css';
+import {nanoid} from 'nanoid';
 
 const Workspaces = () => {
   const [workspaces, setWorkspaces] = useState([]);
@@ -51,7 +52,7 @@ const Workspaces = () => {
   };
 
   const createWorkspace = async (name) => {
-    const workspaceID = `workspace-${Date.now()}`;
+    const workspaceID = `workspace-${nanoid(7)}`;
     await addWorkspace(workspaceID);
     setWorkspaces((prev) => [...prev, workspaceID]);
     router.push(`/workspace/${workspaceID}`);

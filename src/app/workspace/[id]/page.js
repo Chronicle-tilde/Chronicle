@@ -10,6 +10,7 @@ import { Sidebar, SidebarBody, SidebarLink, SidebarProvider } from '../../../com
 import * as Y from 'yjs';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import { MagnifyingGlassIcon, DocumentIcon } from '@heroicons/react/24/outline';
+import {nanoid} from 'nanoid';
 
 const Workspace = () => {
   const { id } = useParams();
@@ -102,7 +103,7 @@ const Workspace = () => {
 
   const addFile = () => {
     const newFileName = `untitled-${Object.keys(workspace?.Docs || {}).length + 1}.md`;
-    const newDocID = `doc-${Date.now()}`;
+    const newDocID = `doc-${nanoid(7)}`;
     const newDoc = new Y.Doc();
     const newDocPersistence = new IndexeddbPersistence(newDocID, newDoc);
 
