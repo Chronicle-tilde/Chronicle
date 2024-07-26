@@ -40,11 +40,17 @@ const initializeWorkspace = async (workspaceID) => {
   });
   const tx = db.transaction(['metadata'], 'readwrite');
   const store = tx.objectStore('metadata');
+  console.log({
+    id: workspaceID,
+    doc: Y.encodeStateAsUpdate(workspaceDoc),
+    fileIDs: yArray.toArray(),
+    ARRAYDOC: Y.encodeStateAsUpdate(arrayDoc),
+  });
   await store.put({
     id: workspaceID,
     doc: Y.encodeStateAsUpdate(workspaceDoc),
     fileIDs: yArray.toArray(),
-    ARRAYDOC:  Y.encodeStateAsUpdate(arrayDoc),
+    ARRAYDOC: Y.encodeStateAsUpdate(arrayDoc),
   });
   await tx.done;
 };

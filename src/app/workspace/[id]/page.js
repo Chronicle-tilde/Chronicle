@@ -8,7 +8,6 @@ import Navbar from '../../../components/navbar';
 import {
   getStoredWorkspaces,
   addFileToWorkspace,
-  updateFileName,
   deleteFileFromWorkspace,
   loadDocFromWorkspace,
 } from '@/utils/idb';
@@ -17,8 +16,6 @@ const Workspace = () => {
   const { id } = useParams();
   const [workspace, setWorkspace] = useState(null);
   const [currentFile, setCurrentFile] = useState('');
-  const [isRenaming, setIsRenaming] = useState(null);
-  const [newFileName, setNewFileName] = useState('');
   const [ydocs, setYdocs] = useState(new Map());
   const [username, setUsername] = useState('');
 
@@ -76,8 +73,8 @@ const Workspace = () => {
         <div className="flex flex-1">
           {workspace && workspace.docs && (
             <>
-              <DesktopSidebar workspaces={Object.keys(workspace.docs).length + 1} />
-              <MobileSidebar workspaces={Object.keys(workspace.docs).length + 1} />
+              <DesktopSidebar workspaces={workspacesList} onDeleteWorkspace={handleFileDelete} />
+              <MobileSidebar workspaces={workspacesList} onDeleteWorkspace={handleFileDelete} />
             </>
           )}
           <Editor currentFile={currentFile} ydocs={ydocs} setYdocs={setYdocs} workspaceID={id} />

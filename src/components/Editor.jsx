@@ -5,6 +5,9 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import { TiptapExtensions, ydoc, provider } from './tiptapExtensions';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
+import * as Y from 'yjs';
+import { WebrtcProvider } from 'y-webrtc';
+
 
 const Editor = ({ docID, username}) => {
   const [markdownContent, setMarkdownContent] = useState('');

@@ -130,7 +130,6 @@ const addFileToWorkspace = async (workspaceID, fileName) => {
     throw new Error(`Workspace with ID ${workspaceID} not found`);
   }
 
-  // Ensure fileIDs is an array before pushing
   if (!Array.isArray(workspace.fileIDs)) {
     workspace.fileIDs = [];
   }

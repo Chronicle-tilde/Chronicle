@@ -22,7 +22,7 @@ const Home = () => {
 
   const [workspaces, setWorkspaces] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(false); // Set initial state to false
+  const [sidebarOpen, setSidebarOpen] = useState(false); 
 
   useEffect(() => {
     async function fetchWorkspaces() {

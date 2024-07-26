@@ -1,19 +1,18 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
-import React from 'react';
+import React,{useRef} from 'react';
 import { useRouter } from 'next/navigation';
 import { IoMenu } from 'react-icons/io5';
 import { useSidebar } from '../components/ui/Sidebar';
 import { initializeWorkspace } from '@/utils/receiversend';
+
 const Navbar = ({ username }) => {
   const router = useRouter();
   const { open, setOpen } = useSidebar();
-
+  const inputref = useRef();
   const toggleSidebar = () => setOpen(prev => !prev);
-  const hbo = ()  =>{
 
-  }
   return (
     <div className="relative">
       <div className="flex h-16 items-center justify-between border-b border-gray-900 bg-[#1F1F1F] shadow-lg">
@@ -29,10 +28,8 @@ const Navbar = ({ username }) => {
         >
           Chronicle
         </button>
-        <textarea>
-          <input type="text" className='text-black'></input>
-        </textarea>
-        <button onClick={initializeWorkspace}>Collab</button>
+        <input type="text" ref={inputref} className='text-black'></input>
+        <button onClick={()=>initializeWorkspace(inputref.current.value)}>Collab</button>
       </div>
     </div>
   );
