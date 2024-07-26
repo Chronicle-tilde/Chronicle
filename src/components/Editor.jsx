@@ -6,7 +6,7 @@ import { TiptapExtensions, ydoc, provider } from './tiptapExtensions';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 
-const Editor = ({ docID, username }) => {
+const Editor = ({ docID, username}) => {
   const [markdownContent, setMarkdownContent] = useState('');
 
   const editor = useEditor({
@@ -50,7 +50,7 @@ const Editor = ({ docID, username }) => {
   }, [editor, docID]);
 
   return (
-    <div className="markdown-editor tiptap">
+    <div className="w-full h-full markdown-editor tiptap">
       <EditorContent editor={editor} />
     </div>
   );

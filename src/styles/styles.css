@@ -1,105 +1,190 @@
+/* styles.css */
+
 /* Tailwind CSS Directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS Variables */
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+/* Global Styles */
+body {
+  background-color: #000000; /* Set a completely black background */
+  color: #ffffff; /* Default text color */
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+/* Gradient Animation */
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
-/* Custom Styles */
-body {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
-  background: #181818;
-}
-
-.bg-neutral-gradient {
-  background: linear-gradient(135deg, #2d2d2d, #4b4b4b);
-}
-
-/* Custom Button Styles */
-.workspaceButton {
-  background-color: #4f298d;
-  border: none;
-  color: whitesmoke;
-  text-align: center;
-  text-decoration: none;
+/* Animated Gradient Text */
+.animated-gradient-wrapper {
+  position: relative;
   display: inline-block;
-  font-size: 16px;
-  margin: 10px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.workspaceButton:hover {
-  background-color: #cc9df9;
-  color: black;
+.animated-gradient {
+  background: linear-gradient(90deg, #ec4899, #a855f7, #ec4899);
+  background-size: 200% 200%;
+  animation: gradient-animation 5s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 6rem; /* Adjust as needed */
+  font-weight: 800; /* Adjust as needed */
+  position: relative;
+  z-index: 1;
 }
+
+.animated-gradient::after {
+  content: 'Chronicle';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: transparent; /* Ensure the text color is transparent */
+  z-index: 1;
+}
+
+/* Custom Styles */
 
 button {
   margin: 10px;
-  padding: 10px;
+  padding: 10px 20px;
   background-color: #6b40af;
   color: white;
   border: none;
   cursor: pointer;
   border-radius: 40px;
-  transition: background-color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+  font-size: 16px;
 }
 
 button:hover {
   background-color: #7351a9;
+  transform: scale(1.05);
 }
 
-/* Editor and Markdown Styles */
-.tiptap-editor {
-  border: 0px solid;
-  border-radius: 30px;
-  padding: 1rem;
-  font-size: 1rem;
-  background: #212121;
-  border-radius: 30px;
-  box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
-  height: 1000px;
+/* File Tree Styles */
+.file-tree {
+  margin-top: 20px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #444;
+  transition: background-color 0.3s ease;
+}
+
+.file-item:hover {
+  background-color: #333; /* Highlight item on hover */
+}
+
+.file-item span {
+  cursor: pointer;
+}
+
+.file-item.active span {
+  font-weight: bold;
+  color: #ff9f00;
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  background-color: #121212; /* Darker background for the main content area */
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Added shadow for depth */
+}
+
+/* Ensure the sidebar spans full height */
+.sidebar {
+  height: 100vh; /* Full viewport height */
+}
+
+/* Editor Styling */
+.editor {
+  flex-grow: 1;
+  padding: 20px;
+  background: #0d1117; /* Updated main editor color */
+  color: #fff;
+  border-left: 1px solid #1f1f1f; /* Updated border color to match Tailwind's border-gray-800 */
+  @apply h-full w-full;
 }
 
 .markdown-editor {
-  background-color: #181818;
+  background-color: #0d1117; /* Updated main editor color */
   color: whitesmoke;
-  border-radius: 30px;
   padding: 15px;
-  cursor: var(--foreground-rgb);
-  height: auto;
+  cursor: text;
+  height: 100%; /* Ensure it doesn't exceed the page height */
+  overflow: auto; /* Add scrollbar if content overflows */
+  border: 1px solid #1f1f1f; /* Updated border color */
+}
+
+.tiptap-editor {
+  border-radius: 30px;
+  padding: 1rem;
+  font-size: 1rem;
+  background: #0d1117; /* Updated main editor color */
+  box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
+  height: 100%; /* Ensure editor fits within the parent container */
 }
 
 .tiptap.ProseMirror {
   outline: none;
-  border: none;
-  background: transparent;
+  background: transparent; /* Keep transparent background for content area */
   padding: 1rem;
   font-size: 1rem;
   border-radius: 4px;
+  overflow: auto; /* Ensure scrollbars appear if content overflows */
+}
+
+.tiptap.ProseMirror:empty:before {
+  content: 'Rules for markdown in Chronicle:'; /* Placeholder text */
+  color: #888; /* Placeholder color */
+  font-style: italic;
+  display: block;
+  position: absolute;
+  pointer-events: none; /* Prevent interaction with placeholder text */
+  top: 1rem; /* Adjust as needed */
+  left: 1rem; /* Adjust as needed */
+}
+
+.tiptap.ProseMirror.empty:focus:before {
+  content: ''; /* Remove placeholder text on focus */
 }
 
 .tiptap :first-child {
   margin-top: 10px;
 }
 
-.tiptap ul, .tiptap ol {
+.tiptap ul,
+.tiptap ol {
   padding: 0 1rem;
   margin: 1.25rem 1rem 1.25rem 0.4rem;
 }
@@ -187,7 +272,7 @@ button:hover {
   margin: 1rem 0;
 }
 
-.task-item input[type="checkbox"] {
+.task-item input[type='checkbox'] {
   margin-right: 0.5rem;
 }
 
@@ -227,96 +312,15 @@ button:hover {
   user-select: none;
   white-space: nowrap;
 }
-
-.workspace {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-.main-content {
-  display: flex;
-  flex-grow: 1;
+::-webkit-scrollbar-thumb {
+  background-color: rgba(81, 80, 80, 0.3);
+  border-radius: 10px;
 }
 
-.editor {
-  flex-grow: 1;
-  padding: 20px;
-  background: #121212;
-  color: #fff;
-  border-left: 1px solid #444;
-}
-
-.file-tree {
-  margin-top: 5px;
-}
-
-.file-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #444;
-}
-
-.file-item span {
-  cursor: pointer;
-  color: white;
-}
-
-.file-item.active span {
-  font-weight: bold;
-  color: #ff9f00;
-}
-
-/* Custom styles for workspace cards */
-.card {
-  background-color: #1e1e1e;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  text-align: center;
-  margin: 1rem;
-}
-
-.card h2 {
-  color: #ffffff;
-}
-
-.card .btn {
-  width: 100px;
-  padding: 0.5rem;
-  margin: 0.5rem;
-}
-
-.card .btn-primary {
-  background-color: #3490dc;
-  color: white;
-}
-
-.card .btn-danger {
-  background-color: #e3342f;
-  color: white;
-}
-
-/* Gradient Animation */
-@keyframes gradientMove {
-  0% {
-    background-position: 0% 0%;
-  }
-  50% {
-    background-position: 100% 100%;
-  }
-  100% {
-    background-position: 0% 0%;
-  }
-}
-
-.animated-gradient {
-  background: linear-gradient(45deg, #6366F1, #FBCFE8, #6366F1);
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientMove 2s ease infinite;
+::-webkit-scrollbar-track {
+  background: transparent;
 }

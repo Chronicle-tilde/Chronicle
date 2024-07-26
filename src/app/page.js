@@ -1,47 +1,76 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar';
 import { useRouter } from 'next/navigation';
-import '../styles/styles.css';
-import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
-import { FaGithub } from "react-icons/fa";
+import {
+  getStoredWorkspaces,
+  addWorkspace,
+  deleteWorkspace as deleteWorkspaceFromDB,
+} from '../utils/idb'; // Ensure this path is correct
+import { DesktopSidebar, MobileSidebar, SidebarProvider } from '../components/ui/Sidebar'; 
 
 const Home = () => {
   const router = useRouter();
+  const [username, setUsername] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const storedUsername = localStorage.getItem('username');
+      return storedUsername || 'Anonymous';
+    }
+    return 'Anonymous';
+  });
+
+  const [workspaces, setWorkspaces] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Set initial state to false
+
+  useEffect(() => {
+    async function fetchWorkspaces() {
+      const savedWorkspaces = await getStoredWorkspaces();
+      setWorkspaces(savedWorkspaces.map((ws) => ({ id: ws.id, name:`Workspace ${ws.id} `})));
+    }
+    fetchWorkspaces();
+  }, []);
+
+  const createWorkspace = async () => {
+    const workspaceID = `workspace-${Date.now()}`;
+    await addWorkspace(workspaceID, username);
+    setWorkspaces((prev) => [...prev, { id: workspaceID, name: `Workspace ${workspaceID} `}]);
+    router.push(`/workspace/${workspaceID}`);
+  };
+
+  const deleteWorkspace = async (workspaceID) => {
+    await deleteWorkspaceFromDB(workspaceID);
+    setWorkspaces((prev) => prev.filter((ws) => ws.id !== workspaceID));
+  };
+
+  const filteredWorkspaces = workspaces.filter((ws) =>
+    ws.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   return (
-    <div className="flex min-h-screen flex-col bg-neutral-gradient text-white">
-      <Navbar />
-      <main className="flex flex-1 flex-col items-center justify-center px-4 py-6">
-        <div className="text-center">
-          <h1 className="bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600 bg-clip-text text-7xl font-extrabold text-transparent">
-            Chronicle
-          </h1>
-          <h4 className="mt-4 bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 bg-clip-text text-2xl font-semibold text-transparent">
-            ⚡<em>Blazin'</em> Fast.
-          </h4>
+    <SidebarProvider
+      open={sidebarOpen}
+      setOpen={setSidebarOpen}
+      buttonText="Add Workspace"
+      onButtonClick={createWorkspace}
+    >
+      <div className="flex h-screen flex-col bg-neutral-900 text-neutral-100">
+        <Navbar username={username} />
+        <div className="flex flex-grow">
+          <DesktopSidebar workspaces={filteredWorkspaces} onDeleteWorkspace={deleteWorkspace} />
+          <div className="flex-grow flex items-center justify-center">
+            <main className="flex flex-col items-center">
+              <h1 className="text-center animated-gradient text-8xl font-bold">Chronicle</h1>
+              <h4 className="mt-4 bg-gradient-to-r from-pink-500 via-indigo-500 to-pink-500 bg-clip-text text-2xl font-semibold text-transparent text-center">
+                A Real Time Collaborative Markdown Editor.
+              </h4>
+            </main>
+          </div>
+          <MobileSidebar workspaces={filteredWorkspaces} onDeleteWorkspace={deleteWorkspace} />
         </div>
-      </main>
-      <div className="flex justify-center items-center mb-8">
-        <button
-          className="flex items-center rounded-lg bg-green-600 px-6 py-2 font-semibold text-white shadow-md transition-colors duration-200 hover:bg-green-700"
-          onClick={() => router.push('/workspaces')}
-        >
-          Go to Workspaces
-          <ArrowRightOnRectangleIcon className="ml-2 h-6 w-6" />
-        </button>
       </div>
-      <div className="flex justify-center mb-4">
-        <a
-          href="https://github.com/homebrew-ec-foss/Chronicle" // Replace with your actual GitHub repo URL
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 text-white shadow-md transition-colors duration-200 hover:bg-gray-700"
-        >
-          <FaGithub className="h-6 w-6" />
-        </a>
-      </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
