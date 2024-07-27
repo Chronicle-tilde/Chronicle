@@ -24,10 +24,11 @@ const Workspace = () => {
   const [currentFile, setCurrentFile] = useState('');
   const [ydocs, setYdocs] = useState(new Map());
   const [username, setUsername] = useState('');
-  const filesList =
-    workspace && workspace.docs
-      ? Object.keys(workspace.fileIDs).map((fileName) => ({ id: fileName, name: fileName }))
-      : [];
+
+  const [filesList, setFilesList] = useState(workspace && workspace.docs
+    ? Object.keys(workspace.fileIDs).map((fileName) => ({ id: fileName, name: fileName }))
+    : []
+  )
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -41,6 +42,7 @@ const Workspace = () => {
         const docs = currentWorkspace.docs || {};
         setWorkspace({ ...currentWorkspace, docs, doc });
         setCurrentFile(Object.keys(docs)[0] || '');
+        setFilesList(Object.keys(docs).map((fileName) => ({ id: docs[fileName], name: fileName })));
       } else {
         setWorkspace({ docs: {} });
       }
@@ -56,6 +58,7 @@ const Workspace = () => {
       const updatedWorkspace = { ...workspace, docs: { ...workspace.docs, [fileName]: docID } };
       setWorkspace(updatedWorkspace);
       setCurrentFile(newFileName);
+      setFilesList([...filesList, { id: docID, name: docID }])
     }
   };
 
@@ -63,6 +66,7 @@ const Workspace = () => {
     if (workspace && Array.isArray(workspace.fileIDs)) {
       console.log('Deleting file:', fileName);
       deleteFileFromWorkspace(id, fileName);
+      setFilesList(filesList.filter((file) => file.id !== fileName));
     }
   };
 
