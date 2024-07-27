@@ -64,7 +64,7 @@ export const DesktopSidebar = ({ workspaces = [], onDeleteWorkspace, ...props })
         {safeWorkspaces.map((workspace) => (
           <div key={workspace.id} className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600">
             <Link
-              href={`/workspace/${workspace.id}`}
+              href={`/workspace/${workspace.id}/fileIDs`}
               className="flex items-center gap-2"
             >
               <FolderIcon className="h-5 w-5 text-neutral-700 dark:text-neutral-200" />
@@ -130,7 +130,7 @@ export const MobileSidebar = ({ workspaces = [], onDeleteWorkspace, ...props }) 
                     <FolderIcon className="h-5 w-5 text-neutral-800 dark:text-neutral-200" />
                     {open && <span className="text-sm text-neutral-800 dark:text-neutral-200">{workspace.name}</span>}
                   </Link>
-                  {open && ( // Show trash icon only when sidebar is open
+                  {open && ( 
                     <button
                       onClick={() => onDeleteWorkspace(workspace.id)}
                       className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"

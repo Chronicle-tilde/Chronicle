@@ -9,6 +9,7 @@ import {
   deleteWorkspace as deleteWorkspaceFromDB,
 } from '../utils/idb'; // Ensure this path is correct
 import { DesktopSidebar, MobileSidebar, SidebarProvider } from '../components/Sidebar_WS'; 
+import { nanoid } from 'nanoid';
 
 const Home = () => {
   const router = useRouter();
@@ -27,15 +28,15 @@ const Home = () => {
   useEffect(() => {
     async function fetchWorkspaces() {
       const savedWorkspaces = await getStoredWorkspaces();
-      setWorkspaces(savedWorkspaces.map((ws) => ({ id: ws.id, name:`Workspace ${ws.id} `})));
+      setWorkspaces(savedWorkspaces.map((ws) => ({ id: ws.id, name:`${ws.id} `})));
     }
     fetchWorkspaces();
   }, []);
 
   const createWorkspace = async () => {
-    const workspaceID = `workspace-${nanoid(7)}}`;
+    const workspaceID = `workspace-${nanoid(7)}`;
     await addWorkspace(workspaceID, username);
-    setWorkspaces((prev) => [...prev, { id: workspaceID, name: `Workspace ${workspaceID} `}]);
+    setWorkspaces((prev) => [...prev, { id: workspaceID, name: `${workspaceID} `}]);
     router.push(`/workspace/${workspaceID}`);
   };
 

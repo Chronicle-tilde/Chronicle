@@ -36,7 +36,7 @@ const Navbar = ({ username }) => {
           Chronicle
         </button>
         <input type="text" ref={inputRef} className='text-black' />
-        <button onClick={() => initializeWorkspace(inputRef.current?.value)}>Collab</button>
+        <button onClick={() => initializeWorkspace(inputRef.current.value)}>Collab</button>
       </div>
     </div>
   );

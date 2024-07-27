@@ -19,7 +19,6 @@ const getDB = async (dbName) => {
 const addWorkspace = async (username) => {
   const workspaceID = `workspace-${nanoid(7)}`;
   const db = await getDB(workspaceID);
-
   const doc = new Y.Doc();
   const docID = `file-${nanoid(7)}`;
   const yarray = doc.getArray('fileIDs');
@@ -44,24 +43,20 @@ const addWorkspace = async (username) => {
     ARRAYDOC: arraydoc.toJSON(),
   });
   await tx.done;
-
   return workspaceID;
 };
 
 const getStoredWorkspaces = async () => {
   const workspaces = [];
-
   const databases = await indexedDB.databases();
   for (const db of databases) {
     const dbName = db.name;
-
     if (dbName) {
       try {
         const dbInstance = await getDB(dbName);
         const tx = dbInstance.transaction(['metadata'], 'readonly');
         const store = tx.objectStore('metadata');
         const workspace = await store.get(dbName);
-
         if (workspace) {
           workspaces.push({
             id: dbName,
@@ -75,7 +70,6 @@ const getStoredWorkspaces = async () => {
       }
     }
   }
-
   return workspaces;
 };
 
@@ -87,8 +81,7 @@ const updateWorkspaceArrayDoc = async (workspaceID, fileIDs) => {
   const db = await getDB(workspaceID);
   const arraydoc = new Y.Doc();
   const filesArray = arraydoc.getArray('files');
-  
-  // Ensure fileIDs is an array
+
   if (!Array.isArray(fileIDs)) {
     console.error('fileIDs is not an array:', fileIDs);
     return;
@@ -106,18 +99,15 @@ const updateWorkspaceArrayDoc = async (workspaceID, fileIDs) => {
     workspace.ARRAYDOC = arraydoc.toJSON();
     await store.put(workspace);
   }
-
   await tx.done;
 };
 
 const addFileToWorkspace = async (workspaceID, fileName) => {
   const db = await getDB(workspaceID);
-
   const doc = new Y.Doc();
   const yarray = doc.getArray('fileIDs');
   const docID = nanoid(7);
-  yarray.push([docID]);
-
+  yarray.push([docID]); 
   const provider = new WebrtcProvider(docID, doc, {
     signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
   });
@@ -155,9 +145,7 @@ const deleteFileFromWorkspace = async (workspaceID, fileName) => {
       workspace.fileIDs.splice(index, 1);
       await store.put(workspace);
     }
-
     await tx.done;
-
     await updateWorkspaceArrayDoc(workspaceID, workspace.fileIDs);
   } else {
     throw new Error(`Workspace with ID ${workspaceID} not found`);
