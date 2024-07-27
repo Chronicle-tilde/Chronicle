@@ -33,7 +33,7 @@ const Home = () => {
   }, []);
 
   const createWorkspace = async () => {
-    const workspaceID = `workspace-${Date.now()}`;
+    const workspaceID = `workspace-${nanoid(7)}}`;
     await addWorkspace(workspaceID, username);
     setWorkspaces((prev) => [...prev, { id: workspaceID, name: `Workspace ${workspaceID} `}]);
     router.push(`/workspace/${workspaceID}`);

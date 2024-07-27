@@ -126,9 +126,9 @@ const addFileToWorkspace = async (workspaceID, fileName) => {
   const store = tx.objectStore('metadata');
   const workspace = await store.get(workspaceID);
 
-  if (!workspace) {
-    throw new Error(`Workspace with ID ${workspaceID} not found`);
-  }
+  // if (!workspace) {
+  //   throw new Error(`Workspace with ID ${workspaceID} not found`);
+  // }
 
   if (!Array.isArray(workspace.fileIDs)) {
     workspace.fileIDs = [];
@@ -170,6 +170,19 @@ const loadDocFromWorkspace = async (workspaceID) => {
   const store = tx.objectStore('metadata');
   const workspace = await store.get(workspaceID);
   return workspace ? workspace.doc : null;
+};
+
+const getFilesForWorkspace = async (workspaceID) => {
+  const db = await getDB(workspaceID);
+  const tx = db.transaction(['metadata'], 'readonly');
+  const store = tx.objectStore('metadata');
+  const workspace = await store.get(workspaceID);
+
+  if (workspace && Array.isArray(workspace.fileIDs)) {
+    return workspace.fileIDs;
+  } else {
+    return [];
+  }
 };
 
 export {
