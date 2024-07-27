@@ -22,7 +22,7 @@ const Editor = ({ docID, username}) => {
         provider: provider,
         user: {
           name: username,
-          color: '#0F0F',
+          color: '#484848',
         },
       }),
     ],

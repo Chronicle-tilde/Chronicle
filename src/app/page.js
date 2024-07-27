@@ -8,8 +8,8 @@ import {
   addWorkspace,
   deleteWorkspace as deleteWorkspaceFromDB,
 } from '../utils/idb'; // Ensure this path is correct
-import { DesktopSidebar, MobileSidebar, SidebarProvider } from '../components/Sidebar_WS'; 
-import {nanoid} from 'nanoid';
+import { DesktopSidebar, MobileSidebar, SidebarProvider } from '../components/Sidebar_WS';
+import { nanoid } from 'nanoid';
 
 const Home = () => {
   const router = useRouter();
@@ -23,12 +23,12 @@ const Home = () => {
 
   const [workspaces, setWorkspaces] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(false); 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     async function fetchWorkspaces() {
       const savedWorkspaces = await getStoredWorkspaces();
-      setWorkspaces(savedWorkspaces.map((ws) => ({ id: ws.id, name:`Workspace ${ws.id} `})));
+      setWorkspaces(savedWorkspaces.map((ws) => ({ id: ws.id, name: `Workspace ${ws.id} ` })));
     }
     fetchWorkspaces();
   }, []);
@@ -36,7 +36,7 @@ const Home = () => {
   const createWorkspace = async () => {
     const workspaceID = `workspace-${nanoid(7)}`;
     await addWorkspace(workspaceID, username);
-    setWorkspaces((prev) => [...prev, { id: workspaceID, name: `Workspace ${workspaceID} `}]);
+    setWorkspaces((prev) => [...prev, { id: workspaceID, name: `Workspace ${workspaceID} ` }]);
     router.push(`/workspace/${workspaceID}`);
   };
 
@@ -60,10 +60,10 @@ const Home = () => {
         <Navbar username={username} />
         <div className="flex flex-grow">
           <DesktopSidebar workspaces={filteredWorkspaces} onDeleteWorkspace={deleteWorkspace} />
-          <div className="flex-grow flex items-center justify-center">
+          <div className="flex flex-grow items-center justify-center">
             <main className="flex flex-col items-center">
-              <h1 className="text-center animated-gradient text-8xl font-bold">Chronicle</h1>
-              <h4 className="mt-4 bg-gradient-to-r from-pink-500 via-indigo-500 to-pink-500 bg-clip-text text-2xl font-semibold text-transparent text-center">
+              <h1 className="animated-gradient text-center text-8xl font-bold">Chronicle</h1>
+              <h4 className="mt-4 bg-gradient-to-r from-pink-500 via-indigo-500 to-pink-500 bg-clip-text text-center text-2xl font-semibold text-transparent">
                 A Real Time Collaborative Markdown Editor.
               </h4>
             </main>

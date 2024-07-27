@@ -4,7 +4,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IconMenu2, IconX } from '@tabler/icons-react';
-import { FolderIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { DocumentIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
 // Define the context with default values
@@ -56,26 +56,32 @@ export const FilesSidebarProvider = ({
   );
 };
 
-// Desktop sidebar component for file management
+/// Desktop sidebar component for file management
 export const FilesDesktopSidebar = ({ files = [], onDeleteFile, ...props }) => {
   const { open, animate, buttonText, onButtonClick } = useFilesSidebar();
   const safeFiles = Array.isArray(files) ? files : [];
+  
   return (
     <motion.div
-      className='hidden h-full w-[300px] flex-shrink-0 bg-neutral-100 px-4 py-4 md:flex md:flex-col dark:bg-neutral-800'
+      className="hidden h-full w-[300px] flex-shrink-0 bg-neutral-100 px-4 py-4 md:flex md:flex-col dark:bg-neutral-800"
       animate={{ width: animate ? (open ? '300px' : '60px') : '300px' }}
       {...props}
     >
       <div className="flex flex-col space-y-2">
         {safeFiles.map((file) => (
-          <div key={file.id} className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600">
+          <div
+            key={file.id}
+            className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600"
+          >
             <Link href={`#`} className="flex items-center gap-2">
-              <FolderIcon className="h-5 w-5 text-neutral-700 dark:text-neutral-200" />
-              {open && <span className="text-sm text-neutral-700 dark:text-neutral-200">{file.name}</span>}
+              <DocumentIcon className="h-5 w-5 text-neutral-700 dark:text-neutral-200" />
+              {open && (
+                <span className="text-sm text-neutral-700 dark:text-neutral-200">{file.name}</span>
+              )}
             </Link>
             {open && (
               <button
-                //onClick={() => onDeleteFiles(docid)}
+                onClick={() => onDeleteFile(file.id)}
                 className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
               >
                 <TrashIcon className="h-5 w-5" />
@@ -85,7 +91,7 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, ...props }) => {
         ))}
         <button
           onClick={onButtonClick}
-          className="mt-4 flex items-center justify-center bg-transparent text-white p-2 rounded-full shadow-md hover:bg-[#181818] transition"
+          className="mt-4 flex items-center justify-center rounded-full bg-transparent p-2 text-white shadow-md transition hover:bg-[#181818]"
         >
           {open ? buttonText : <PlusIcon className="h-5 w-5" />}
         </button>
@@ -94,13 +100,14 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, ...props }) => {
   );
 };
 
+
 // Mobile sidebar component for file management
 export const FilesMobileSidebar = ({ files = [], onDeleteFile, ...props }) => {
   const { open, setOpen, buttonText, onButtonClick } = useFilesSidebar();
   const safeFiles = Array.isArray(files) ? files : [];
   return (
     <div
-      className='flex h-10 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800'
+      className="flex h-10 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800"
       {...props}
     >
       <div className="z-20 flex w-full justify-end">
@@ -116,7 +123,7 @@ export const FilesMobileSidebar = ({ files = [], onDeleteFile, ...props }) => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '-100%', opacity: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className='fixed inset-0 z-[100] flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900'
+            className="fixed inset-0 z-[100] flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900"
           >
             <div
               className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200"
@@ -126,14 +133,21 @@ export const FilesMobileSidebar = ({ files = [], onDeleteFile, ...props }) => {
             </div>
             <div className="flex flex-col space-y-2">
               {safeFiles.map((file) => (
-                <div key={file.id} className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600">
+                <div
+                  key={file.id}
+                  className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600"
+                >
                   <Link href={`#`} className="flex items-center gap-2">
-                    <FolderIcon className="h-5 w-5 text-neutral-800 dark:text-neutral-200" />
-                    {open && <span className="text-sm text-neutral-800 dark:text-neutral-200">{file.name}</span>}
+                    <DocumentIcon className="h-5 w-5 text-neutral-800 dark:text-neutral-200" />
+                    {open && (
+                      <span className="text-sm text-neutral-800 dark:text-neutral-200">
+                        {file.name}
+                      </span>
+                    )}
                   </Link>
                   {open && (
                     <button
-                      onClick={() => onDeleteFile(file.id)}
+                      onClick={() => console.log(file.name)}
                       className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                     >
                       <TrashIcon className="h-5 w-5" />
@@ -143,7 +157,7 @@ export const FilesMobileSidebar = ({ files = [], onDeleteFile, ...props }) => {
               ))}
               <button
                 onClick={onButtonClick}
-                className="mt-4 flex items-center justify-center bg-blue-500 text-white p-2 rounded-full shadow-md hover:bg-blue-600 transition"
+                className="mt-4 flex items-center justify-center rounded-full bg-blue-500 p-2 text-white shadow-md transition hover:bg-blue-600"
               >
                 {open ? buttonText : <PlusIcon className="h-5 w-5" />}
               </button>

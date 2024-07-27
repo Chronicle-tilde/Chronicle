@@ -1,16 +1,21 @@
+// page.js
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Editor from '../../../components/Editor';
-import { FilesSidebarProvider, FilesDesktopSidebar, FilesMobileSidebar } from '../../../components/Sidebar_Files';
+import {
+  FilesSidebarProvider,
+  FilesDesktopSidebar,
+  FilesMobileSidebar,
+} from '../../../components/Sidebar_Files';
 import Navbar from '../../../components/navbar';
+
 import {
   getStoredWorkspaces,
   addFileToWorkspace,
   deleteFileFromWorkspace,
   loadDocFromWorkspace,
-  getFilesForWorkspace
 } from '@/utils/idb';
 
 const Workspace = () => {
@@ -19,6 +24,10 @@ const Workspace = () => {
   const [currentFile, setCurrentFile] = useState('');
   const [ydocs, setYdocs] = useState(new Map());
   const [username, setUsername] = useState('');
+  const filesList =
+    workspace && workspace.docs
+      ? Object.keys(workspace.fileIDs).map((fileName) => ({ id: fileName, name: fileName }))
+      : [];
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -40,41 +49,25 @@ const Workspace = () => {
     fetchWorkspace();
   }, [id]);
 
-
   const addFile = async () => {
     if (workspace && workspace.docs) {
       const newFileName = `untitled-${Object.keys(workspace.docs).length + 1}.md`;
       const { fileName, docID } = await addFileToWorkspace(id, newFileName);
       const updatedWorkspace = { ...workspace, docs: { ...workspace.docs, [fileName]: docID } };
-      
-      console.log('Adding file:', fileName);
-      console.log('Updated workspace:', updatedWorkspace);
-  
       setWorkspace(updatedWorkspace);
       setCurrentFile(newFileName);
     }
   };
-  
 
   const handleFileDelete = async (fileName) => {
-    if (workspace && workspace.docs) {
-      await deleteFileFromWorkspace(id, fileName);
-      const updatedDocs = { ...workspace.docs };
-      delete updatedDocs[fileName];
-      setWorkspace({ ...workspace, docs: updatedDocs });
-      setCurrentFile(Object.keys(updatedDocs).length > 0 ? Object.keys(updatedDocs)[0] : '');
+    if (workspace && Array.isArray(workspace.fileIDs)) {
+      console.log('Deleting file:', fileName);
+      deleteFileFromWorkspace(id, fileName);
     }
   };
 
-  const filesList = workspace && workspace.docs
-    ? Object.keys(workspace.fileIDs).map((fileName) => ({ id: fileName, name: fileName }))
-    : [];
-
   return (
-    <FilesSidebarProvider
-      buttonText="Add File"
-      onButtonClick={addFile}
-    >
+    <FilesSidebarProvider buttonText="Add File" onButtonClick={addFile}>
       <div className="flex h-screen flex-col">
         <Navbar username={username} />
         <div className="flex flex-1">
