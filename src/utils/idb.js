@@ -16,13 +16,13 @@ const getDB = async (dbName) => {
   });
 };
 
-const addWorkspace = async (username) => {
-  const workspaceID = `workspace-${nanoid(7)}`;
+const addWorkspace = async (workspaceID, username) => {
+  // const workspaceID = `workspace-${nanoid(7)}`;
   const db = await getDB(workspaceID);
 
   const doc = new Y.Doc();
   const docID = `file-${nanoid(7)}`;
-  const yarray = doc.getArray('fileIDs');
+  const yarray = doc.getArray('untitled-1.md');
   yarray.push([docID]);
 
   const arraydoc = new Y.Doc();

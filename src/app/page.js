@@ -9,6 +9,7 @@ import {
   deleteWorkspace as deleteWorkspaceFromDB,
 } from '../utils/idb'; // Ensure this path is correct
 import { DesktopSidebar, MobileSidebar, SidebarProvider } from '../components/ui/Sidebar'; 
+import {nanoid} from 'nanoid';
 
 const Home = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ const Home = () => {
   }, []);
 
   const createWorkspace = async () => {
-    const workspaceID = `workspace-${Date.now()}`;
+    const workspaceID = `workspace-${nanoid(7)}`;
     await addWorkspace(workspaceID, username);
     setWorkspaces((prev) => [...prev, { id: workspaceID, name: `Workspace ${workspaceID} `}]);
     router.push(`/workspace/${workspaceID}`);
