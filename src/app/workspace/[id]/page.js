@@ -3,13 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Editor from '../../../components/Editor';
-import { SidebarProvider, DesktopSidebar, MobileSidebar } from '../../../components/ui/Sidebar';
+import { FilesSidebarProvider, FilesDesktopSidebar, FilesMobileSidebar } from '../../../components/Sidebar_Files';
 import Navbar from '../../../components/navbar';
 import {
   getStoredWorkspaces,
   addFileToWorkspace,
   deleteFileFromWorkspace,
   loadDocFromWorkspace,
+  getFilesForWorkspace
 } from '@/utils/idb';
 
 const Workspace = () => {
@@ -39,15 +40,21 @@ const Workspace = () => {
     fetchWorkspace();
   }, [id]);
 
+
   const addFile = async () => {
     if (workspace && workspace.docs) {
       const newFileName = `untitled-${Object.keys(workspace.docs).length + 1}.md`;
       const { fileName, docID } = await addFileToWorkspace(id, newFileName);
       const updatedWorkspace = { ...workspace, docs: { ...workspace.docs, [fileName]: docID } };
+      
+      console.log('Adding file:', fileName);
+      console.log('Updated workspace:', updatedWorkspace);
+  
       setWorkspace(updatedWorkspace);
       setCurrentFile(newFileName);
     }
   };
+  
 
   const handleFileDelete = async (fileName) => {
     if (workspace && workspace.docs) {
@@ -59,12 +66,12 @@ const Workspace = () => {
     }
   };
 
-  const workspacesList = workspace && workspace.docs
-    ? Object.keys(workspace.docs).map((fileName) => ({ id: fileName, name: fileName }))
+  const filesList = workspace && workspace.docs
+    ? Object.keys(workspace.fileIDs).map((fileName) => ({ id: fileName, name: fileName }))
     : [];
 
   return (
-    <SidebarProvider
+    <FilesSidebarProvider
       buttonText="Add File"
       onButtonClick={addFile}
     >
@@ -73,14 +80,14 @@ const Workspace = () => {
         <div className="flex flex-1">
           {workspace && workspace.docs && (
             <>
-              <DesktopSidebar workspaces={workspacesList} onDeleteWorkspace={handleFileDelete} />
-              <MobileSidebar workspaces={workspacesList} onDeleteWorkspace={handleFileDelete} />
+              <FilesDesktopSidebar files={filesList} onDeleteFile={handleFileDelete} />
+              <FilesMobileSidebar files={filesList} onDeleteFile={handleFileDelete} />
             </>
           )}
           <Editor currentFile={currentFile} ydocs={ydocs} setYdocs={setYdocs} workspaceID={id} />
         </div>
       </div>
-    </SidebarProvider>
+    </FilesSidebarProvider>
   );
 };
 
