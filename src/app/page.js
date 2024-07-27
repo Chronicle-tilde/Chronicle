@@ -8,7 +8,7 @@ import {
   addWorkspace,
   deleteWorkspace as deleteWorkspaceFromDB,
 } from '../utils/idb'; // Ensure this path is correct
-import { DesktopSidebar, MobileSidebar, SidebarProvider } from '../components/ui/Sidebar'; 
+import { DesktopSidebar, MobileSidebar, SidebarProvider } from '../components/Sidebar_WS'; 
 
 const Home = () => {
   const router = useRouter();

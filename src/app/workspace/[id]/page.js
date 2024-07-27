@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Editor from '../../../components/Editor';
-import { SidebarProvider, DesktopSidebar, MobileSidebar } from '../../../components/ui/Sidebar';
+import { FilesSidebarProvider, FilesDesktopSidebar, FilesMobileSidebar } from '../../../components/Sidebar_Files';
 import Navbar from '../../../components/navbar';
 import {
   getStoredWorkspaces,
@@ -64,7 +64,7 @@ const Workspace = () => {
     : [];
 
   return (
-    <SidebarProvider
+    <FilesSidebarProvider
       buttonText="Add File"
       onButtonClick={addFile}
     >
@@ -73,14 +73,14 @@ const Workspace = () => {
         <div className="flex flex-1">
           {workspace && workspace.docs && (
             <>
-              <DesktopSidebar workspaces={workspacesList} onDeleteWorkspace={handleFileDelete} />
-              <MobileSidebar workspaces={workspacesList} onDeleteWorkspace={handleFileDelete} />
+              <FilesDesktopSidebar workspaces={workspacesList} onDeleteWorkspace={handleFileDelete} />
+              <FilesMobileSidebar workspaces={workspacesList} onDeleteWorkspace={handleFileDelete} />
             </>
           )}
           <Editor currentFile={currentFile} ydocs={ydocs} setYdocs={setYdocs} workspaceID={id} />
         </div>
       </div>
-    </SidebarProvider>
+    </FilesSidebarProvider>
   );
 };
 
