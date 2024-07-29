@@ -11,7 +11,12 @@ import { InputRule } from '@tiptap/core';
 import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
 import Mention from '@tiptap/extension-mention';
-
+import * as Y from 'yjs';
+import { WebrtcProvider } from 'y-webrtc';
+const ydoc = new Y.Doc();
+const provider = new WebrtcProvider('Chronicle R-1', ydoc, {
+  signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
+});
 const TiptapExtensions = [
   Document,
   Paragraph,
@@ -107,4 +112,4 @@ const TiptapExtensions = [
   }),
 ];
 
-export { TiptapExtensions };
+export { ydoc, provider, TiptapExtensions };

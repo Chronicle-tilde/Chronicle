@@ -20,6 +20,7 @@ const addWorkspace = async (workspaceID, username) => {
   const docID = nanoid(7);
   const yarray = doc.getArray('untitled-1.md');
   yarray.push([docID]);
+  const newFileName = `untitled-1.md`;
   const tx = db.transaction(['metadata'], 'readwrite');
   const store = tx.objectStore('metadata');
   await store.put({
@@ -27,6 +28,7 @@ const addWorkspace = async (workspaceID, username) => {
     username,
     fileIDs: [docID],
     fileIDdocs: [doc.toJSON()],
+    filenames: [newFileName],
   });
   await tx.done;
   return workspaceID;
@@ -49,6 +51,7 @@ const getStoredWorkspaces = async () => {
             username: workspace.username,
             fileIDs: workspace.fileIDs,
             fileIDdocs: workspace.fileIDdocs,
+            filenames: workspace.filenames,
           });
         }
       } catch (error) {
@@ -77,37 +80,33 @@ const addFileToWorkspace = async (workspaceID, fileName) => {
   if (!Array.isArray(workspace.fileIDs)) {
     workspace.fileIDs = [];
   }
-
   if (!Array.isArray(workspace.fileIDdocs)) {
     workspace.fileIDdocs = [];
   }
   workspace.fileIDs.push(docID);
-
   workspace.fileIDdocs.push(doc.toJSON());
-
+  workspace.filenames.push(fileName);
   await store.put(workspace);
   await tx.done;
-
   return { fileName, docID };
 };
 
 const deleteFileFromWorkspace = async (workspaceID, fileID) => {
-  console.log(`worspace ${workspaceID}`)
+  console.log(`workspace ${workspaceID}`)
   const db = await getDB(workspaceID);
   const tx = db.transaction(['metadata'], 'readwrite');
   const store = tx.objectStore('metadata');
   const workspace = await store.get(workspaceID);
   const updatedFileIDs = workspace.fileIDs;
   const updatedFileIDdocs = workspace.fileIDdocs;
+  const updatedFileNames = workspace.filenames;
   console.log(`workspace ids ${updatedFileIDs}`);
   if (workspace) {
     const fileIndex = workspace.fileIDs.indexOf(fileID);
     if (fileIndex > -1) {
-      console.log(`Deleting fileID ${fileID} at index ${fileIndex}`);
-     updatedFileIDs.splice(fileIndex, 1);
-      console.log(`workspace ids after slice ${updatedFileIDs}`);
+      updatedFileIDs.splice(fileIndex, 1);
       updatedFileIDdocs.splice(fileIndex, 1);
-      //delete workspace.fileIDs[fileID];
+      updatedFileNames.splice(fileIndex, 1);
       await store.put(workspace);
       await tx.done;
     } else {

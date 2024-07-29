@@ -11,7 +11,7 @@ import {
 } from '../../../components/Sidebar_Files';
 import Navbar from '../../../components/navbar';
 import * as Y from 'yjs';
-
+import { nanoid } from 'nanoid'
 import {
   getStoredWorkspaces,
   addFileToWorkspace,
@@ -48,13 +48,14 @@ const[filesList,setfilesList]=useState([]);
         console.log('has currebt workspace')
         const doc = await loadDocFromWorkspace(id);
         const docs = currentWorkspace.fileIDs || {};
+        const docnames = currentWorkspace.filenames || [];
         console.log(docs);
         setWorkspace({ ...currentWorkspace, docs, doc });
         setCurrentFile(Object.keys(docs)[0] || '');
-        setfilesList(Object.keys(docs).map((fileName) => ({
-          id: docs[fileName],
-          name: fileName
-        })));
+        setfilesList(Object.keys(docs).map((fileIndex => ({
+          id: docs[fileIndex],
+          name: docnames[fileIndex],
+        }))));
       }else {
         setWorkspace({ docs: {} });
       }
@@ -62,19 +63,17 @@ const[filesList,setfilesList]=useState([]);
 
     fetchWorkspace();
   }, [id]);
-
   const addFile = async () => {
-    if (workspace && workspace.docs) {
-      const newFileName = `untitled-${Object.keys(workspace.docs).length + 1}.md`;
-      const { fileName, docID } = await addFileToWorkspace(id, newFileName);
-      setDocumentID(docID);
-      const updatedWorkspace = { ...workspace, docs: { ...workspace.docs, [fileName]: docID } };
+    if (workspace && workspace.fileIDs) {
+      const fileIndex = Object.keys(workspace.fileIDs).length + 1
+      const newFileName = `untitled-${nanoid(3)}`;
+      const { filename, docID } = await addFileToWorkspace(id, newFileName);
+      const updatedWorkspace = { ...workspace, docs: { ...workspace.docs, [fileIndex]: docID } };
       setWorkspace(updatedWorkspace);
       setCurrentFile(newFileName);
-      setfilesList([...filesList, { id: docID, name: docID }])
+      setfilesList([...filesList, { id: docID, name: newFileName }])
     }
   };
-
   const handleFileDelete = async (fileName) => {
     if (workspace && Array.isArray(workspace.fileIDs)) {
       deleteFileFromWorkspace(id, fileName);
@@ -84,7 +83,6 @@ const[filesList,setfilesList]=useState([]);
 
   const handleFileClick = (filename) => {
     console.log(filename);
-    console.log(documentID);
   };
   return (
     <FilesSidebarProvider buttonText="Add File" onButtonClick={addFile}>

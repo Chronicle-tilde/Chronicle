@@ -6,9 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { IconMenu2, IconX } from '@tabler/icons-react';
 import { DocumentIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { MdDriveFileRenameOutline } from "react-icons/md";
-
-
+import { MdDriveFileRenameOutline } from 'react-icons/md';
 
 // Define the context with default values
 const FilesSidebarContext = createContext({
@@ -77,27 +75,24 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
             key={file.id}
             className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600"
           >
-            <a
-              href="#"
-              onClick={() => onCurrentFileClick(file.name)}
-              className="flex items-center gap-2"
-            >
+            <a onClick={() => onCurrentFileClick(file.name)} className="flex items-center gap-2">
               <DocumentIcon className="h-5 w-5 text-neutral-700 dark:text-neutral-200" />
               {open && (
                 <span className="text-sm text-neutral-700 dark:text-neutral-200">{file.name}</span>
               )}
             </a>
-        
             {open && (
-                    <>
-                    <button className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 ml-auto w-auto"><MdDriveFileRenameOutline className="h-5 w-5"/></button>
-                      <button
-                        onClick={() => onDeleteFile(file.id)}
-                          className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                          >
-                      <TrashIcon className="h-5 w-5" />
-                      </button>
-                      </>
+              <>
+                <button className="mr-auto w-auto bg-transparent text-white hover:bg-transparent">
+                  <MdDriveFileRenameOutline className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => onDeleteFile(file.id)}
+                  className="bg-transparent text-red-500 hover:bg-neutral-900"
+                >
+                  <TrashIcon className="h-5 w-5" />
+                </button>
+              </>
             )}
           </div>
         ))}
@@ -151,7 +146,6 @@ export const FilesMobileSidebar = ({ files = [], onDeleteFile, onCurrentFileClic
                   className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600"
                 >
                   <a
-                    href="#"
                     onClick={() => onCurrentFileClick(file.name)}
                     className="flex items-center gap-2"
                   >
@@ -164,14 +158,15 @@ export const FilesMobileSidebar = ({ files = [], onDeleteFile, onCurrentFileClic
                   </a>
                   {open && (
                     <>
-                    <button className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 ml-auto w-auto"><MdDriveFileRenameOutline className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() => onDeleteFile(file.id)}
-                      className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                    >
-                      <TrashIcon className="h-5 w-5" />
-                    </button>
+                      <button className="mr-auto w-auto bg-transparent text-white hover:bg-transparent">
+                        <MdDriveFileRenameOutline className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => onDeleteFile(file.id)}
+                        className="bg-transparent text-red-500 hover:bg-neutral-900"
+                      >
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
                     </>
                   )}
                 </div>

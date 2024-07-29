@@ -28,7 +28,7 @@ const Home = () => {
   useEffect(() => {
     async function fetchWorkspaces() {
       const savedWorkspaces = await getStoredWorkspaces();
-      setWorkspaces(savedWorkspaces.map((ws) => ({ id: ws.id, name: `Workspace ${ws.id} ` })));
+      setWorkspaces(savedWorkspaces.map((ws) => ({ id: ws.id, name: `${ws.id} ` })));
     }
     fetchWorkspaces();
   }, []);
@@ -36,7 +36,7 @@ const Home = () => {
   const createWorkspace = async () => {
     const workspaceID = `workspace-${nanoid(7)}`;
     await addWorkspace(workspaceID, username);
-    setWorkspaces((prev) => [...prev, { id: workspaceID, name: `Workspace ${workspaceID} ` }]);
+    setWorkspaces((prev) => [...prev, { id: workspaceID, name: `${workspaceID} ` }]);
     router.push(`/workspace/${workspaceID}`);
   };
 

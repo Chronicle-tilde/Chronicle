@@ -65,15 +65,15 @@ export const DesktopSidebar = ({ workspaces = [], onDeleteWorkspace, ...props })
           <div key={workspace.id} className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600">
             <Link
               href={`/workspace/${workspace.id}`}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 rounded-lg"
             >
               <FolderIcon className="h-5 w-5 text-neutral-700 dark:text-neutral-200" />
-              {open && <span className="text-sm text-neutral-700 dark:text-neutral-200">{workspace.name}</span>}
+              {open && <span className="text-sm text-neutral-700 dark:text-neutral-200 rounded-xl">{workspace.name}</span>}
             </Link>
             {open && ( // Show trash icon only when sidebar is open
               <button
                 onClick={() => onDeleteWorkspace(workspace.id)}
-                className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                className="text-red-500 bg-transparent hover:bg-neutral-900"
               >
                 <TrashIcon className="h-5 w-5" />
               </button>
@@ -125,15 +125,15 @@ export const MobileSidebar = ({ workspaces = [], onDeleteWorkspace, ...props }) 
                 <div key={workspace.id} className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600">
                   <Link
                     href={`/workspace/${workspace.id}`}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 rounded-lg"
                   >
                     <FolderIcon className="h-5 w-5 text-neutral-800 dark:text-neutral-200" />
-                    {open && <span className="text-sm text-neutral-800 dark:text-neutral-200">{workspace.name}</span>}
+                    {open && <span className="text-sm text-neutral-800 dark:text-neutral-200 rounded-xl">{workspace.name}</span>}
                   </Link>
                   {open && ( 
                     <button
                       onClick={() => onDeleteWorkspace(workspace.id)}
-                      className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                      className="text-red-500 bg-transparent hover:bg-neutral-900"
                     >
                       <TrashIcon className="h-5 w-5" />
                     </button>

@@ -5,14 +5,8 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import { ydoc, provider, TiptapExtensions } from './tiptapExtensions';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
-import * as Y from 'yjs';
-import { WebrtcProvider } from 'y-webrtc';
 
 const Editor = ({ docID, fileID }) => {
-  const ydoc = new Y.Doc();
-  const provider = new WebrtcProvider(fileID, ydoc, {
-    signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
-  });
   const [markdownContent, setMarkdownContent] = useState('');
   const editor = useEditor({
     extensions: [
