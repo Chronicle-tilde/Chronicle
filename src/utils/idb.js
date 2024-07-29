@@ -116,7 +116,6 @@ const deleteFileFromWorkspace = async (workspaceID, fileID) => {
     throw new Error(`Workspace with ID ${workspaceID} not found`);
   }
 };
-
 const loadDocFromWorkspace = async (workspaceID) => {
   const db = await getDB(workspaceID);
   const tx = db.transaction('metadata', 'readonly');
@@ -124,6 +123,7 @@ const loadDocFromWorkspace = async (workspaceID) => {
   const workspace = await store.get(workspaceID);
   return workspace ? workspace.fileIDdocs : null;
 };
+
 
 export {
   getStoredWorkspaces,

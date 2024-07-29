@@ -52,7 +52,7 @@ const[filesList,setfilesList]=useState([]);
         console.log(docs);
         setWorkspace({ ...currentWorkspace, docs, doc });
         setCurrentFile(Object.keys(docs)[0] || '');
-        setfilesList(Object.keys(docs).map((fileIndex => ({
+        setfilesList(Object.keys(docnames).map((fileIndex => ({
           id: docs[fileIndex],
           name: docnames[fileIndex],
         }))));
@@ -77,6 +77,7 @@ const[filesList,setfilesList]=useState([]);
   const handleFileDelete = async (fileName) => {
     if (workspace && Array.isArray(workspace.fileIDs)) {
       deleteFileFromWorkspace(id, fileName);
+      console.log(`hello i am ${fileName}`);
       setfilesList(filesList.filter((file) => file.id !== fileName));
     }
   };
@@ -84,6 +85,7 @@ const[filesList,setfilesList]=useState([]);
   const handleFileClick = (filename) => {
     console.log(filename);
   };
+
   return (
     <FilesSidebarProvider buttonText="Add File" onButtonClick={addFile}>
       <div className="flex h-screen flex-col">
@@ -95,6 +97,7 @@ const[filesList,setfilesList]=useState([]);
                 files={filesList}
                 onDeleteFile={handleFileDelete}
                 onCurrentFileClick={handleFileClick}
+                //workspaceID={currentWorkspace}
               />
               <FilesMobileSidebar
                 files={filesList}

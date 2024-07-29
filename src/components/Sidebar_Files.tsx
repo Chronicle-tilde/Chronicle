@@ -7,7 +7,10 @@ import { IconMenu2, IconX } from '@tabler/icons-react';
 import { DocumentIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { MdDriveFileRenameOutline } from 'react-icons/md';
-
+import Workspace from '../../src/app/workspace/[id]/page';
+import { getDB } from '@/utils/receiversend';
+import { getStoredWorkspaces } from '@/utils/idb';
+import { useParams } from 'next/navigation';
 // Define the context with default values
 const FilesSidebarContext = createContext({
   open: false,
@@ -61,6 +64,58 @@ export const FilesSidebarProvider = ({
 // sidebar_files.jsx
 export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileClick, ...props }) => {
   const { open, animate, buttonText, onButtonClick } = useFilesSidebar();
+  const [renamingFileId, setRenamingFileId] = useState(null); // File ID currently being renamed
+  const [newName, setNewName] = useState(''); // New name for the file
+  const { id } = useParams();
+
+  const handleRenameClick = (fileId, currentName) => {
+    setRenamingFileId(fileId);
+    console.log('firstplace');
+    console.log(fileId);
+    setNewName(currentName);
+    console.log(newName);
+  };
+
+  const handleConfirmRename = async(fileId) => {
+    setRenamingFileId(null);
+    console.log(newName);
+    console.log(fileId);
+    console.log('Renaming filee to:', newName);
+    console.log(Workspace);
+    const wrs = await getStoredWorkspaces();
+    const currentWorkspace = wrs.find((ws) => ws.id === id);
+    console.log(currentWorkspace);
+    const workspaceID=currentWorkspace.id;
+    console.log(workspaceID);
+
+    if (currentWorkspace) {
+      const fileIndex = currentWorkspace.fileIDs.indexOf(fileId);
+      console.log(fileIndex);
+      if (currentWorkspace && currentWorkspace.filenames) {
+        const fileIndex = currentWorkspace.fileIDs.indexOf(fileId);
+        console.log(fileIndex);
+    
+        if (fileIndex !== -1) {
+          currentWorkspace.filenames[fileIndex] = newName
+          console.log(currentWorkspace);
+          await saveUpdatedWorkspace(currentWorkspace);
+    }
+  }
+}
+  }
+
+  const saveUpdatedWorkspace = async (currentWorkspace) => {
+    const db = await getDB(currentWorkspace.id);
+    const tx = db.transaction(['metadata'], 'readwrite');
+    const store = tx.objectStore('metadata'); 
+    console.log("sending fn");
+    console.log(currentWorkspace);
+    console.log(currentWorkspace.id);
+    await store.put(currentWorkspace);
+    await tx.oncomplete;
+  };
+
+
   const safeFiles = Array.isArray(files) ? files : [];
 
   return (
@@ -72,26 +127,52 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
       <div className="flex flex-col space-y-2">
         {safeFiles.map((file) => (
           <div
-            key={file.id}
+            key={file.filenames}
             className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600"
           >
-            <a onClick={() => onCurrentFileClick(file.name)} className="flex items-center gap-2">
-              <DocumentIcon className="h-5 w-5 text-neutral-700 dark:text-neutral-200" />
-              {open && (
-                <span className="text-sm text-neutral-700 dark:text-neutral-200">{file.name}</span>
-              )}
-            </a>
-            {open && (
+            {renamingFileId === file.id ? (
               <>
-                <button className="mr-auto w-auto bg-transparent text-white hover:bg-transparent">
-                  <MdDriveFileRenameOutline className="h-5 w-5" />
-                </button>
+                <textarea
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  className="border p-1 mr-2 w-40 h-9 text-black"
+                />
                 <button
-                  onClick={() => onDeleteFile(file.id)}
-                  className="bg-transparent text-red-500 hover:bg-neutral-900"
+                  onClick={()=>handleConfirmRename(file.id)}
+                  className="bg-[#1c1c1c] hover:bg-slate-900 text-white px-2 py-1 rounded"
                 >
-                  <TrashIcon className="h-5 w-5" />
+                  Rename
                 </button>
+              </>
+            ) : (
+              <>
+                <a
+                  onClick={() => onCurrentFileClick(file.name)}
+                  className="flex items-center gap-2"
+                >
+                  <DocumentIcon className="h-5 w-5 text-neutral-700 dark:text-neutral-200" />
+                  {open && (
+                    <span className="text-sm text-neutral-700 dark:text-neutral-200">
+                      {file.name}
+                    </span>
+                  )}
+                </a>
+                {open && (
+                  <>
+                    <button
+                      onClick={() => handleRenameClick(file.id, file.name)}
+                      className="mr-auto w-auto bg-transparent text-white hover:bg-transparent"
+                    >
+                      <MdDriveFileRenameOutline className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => onDeleteFile(file.id)}
+                      className="bg-transparent text-red-500 hover:bg-neutral-900"
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                    </button>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -111,6 +192,23 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
 // sidebar_files.jsx
 export const FilesMobileSidebar = ({ files = [], onDeleteFile, onCurrentFileClick, ...props }) => {
   const { open, setOpen, buttonText, onButtonClick } = useFilesSidebar();
+  const [renamingFileId, setRenamingFileId] = useState(null); // File ID currently being renamed
+  const [newName, setNewName] = useState(''); // New name for the file
+
+  const handleRenameClick = (fileId, currentName) => {
+    setRenamingFileId(fileId);
+    setNewName(currentName); // Pre-fill the textarea with the current file name
+  };
+
+  const handleConfirmRename = () => {
+    if (renamingFileId && newName) {
+      // Handle file renaming logic here
+      console.log('Renaming file to:', newName); // Replace with actual rename logic
+      setRenamingFileId(null); // Close rename mode
+      setNewName(''); // Clear the new name
+    }
+  };
+
   const safeFiles = Array.isArray(files) ? files : [];
 
   return (
@@ -145,28 +243,49 @@ export const FilesMobileSidebar = ({ files = [], onDeleteFile, onCurrentFileClic
                   key={file.id}
                   className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600"
                 >
-                  <a
-                    onClick={() => onCurrentFileClick(file.name)}
-                    className="flex items-center gap-2"
-                  >
-                    <DocumentIcon className="h-5 w-5 text-neutral-800 dark:text-neutral-200" />
-                    {open && (
-                      <span className="text-sm text-neutral-800 dark:text-neutral-200">
-                        {file.name}
-                      </span>
-                    )}
-                  </a>
-                  {open && (
+                  {renamingFileId === file.id ? (
                     <>
-                      <button className="mr-auto w-auto bg-transparent text-white hover:bg-transparent">
-                        <MdDriveFileRenameOutline className="h-5 w-5" />
-                      </button>
+                      <textarea
+                        value={newName}
+                        onChange={(e) => setNewName(e.target.value)}
+                        className="border p-1 mr-2"
+                      />
                       <button
-                        onClick={() => onDeleteFile(file.id)}
-                        className="bg-transparent text-red-500 hover:bg-neutral-900"
+                        onClick={handleConfirmRename}
+                        className="bg-blue-500 text-white px-2 py-1 rounded"
                       >
-                        <TrashIcon className="h-5 w-5" />
+                        Rename
                       </button>
+                    </>
+                  ) : (
+                    <>
+                      <a
+                        onClick={() => onCurrentFileClick(file.name)}
+                        className="flex items-center gap-2"
+                      >
+                        <DocumentIcon className="h-5 w-5 text-neutral-800 dark:text-neutral-200" />
+                        {open && (
+                          <span className="text-sm text-neutral-800 dark:text-neutral-200">
+                            {file.name}
+                          </span>
+                        )}
+                      </a>
+                      {open && (
+                        <>
+                          <button
+                            onClick={() => handleRenameClick(file.id, file.name)}
+                            className="mr-auto w-auto bg-transparent text-white hover:bg-transparent"
+                          >
+                            <MdDriveFileRenameOutline className="h-5 w-5" />
+                          </button>
+                          <button
+                            onClick={() => onDeleteFile(file.id)}
+                            className="bg-transparent text-red-500 hover:bg-neutral-900"
+                          >
+                            <TrashIcon className="h-5 w-5" />
+                          </button>
+                        </>
+                      )}
                     </>
                   )}
                 </div>
