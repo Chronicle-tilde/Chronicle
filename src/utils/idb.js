@@ -92,16 +92,22 @@ const addFileToWorkspace = async (workspaceID, fileName) => {
 };
 
 const deleteFileFromWorkspace = async (workspaceID, fileID) => {
+  console.log(`worspace ${workspaceID}`)
   const db = await getDB(workspaceID);
   const tx = db.transaction(['metadata'], 'readwrite');
   const store = tx.objectStore('metadata');
   const workspace = await store.get(workspaceID);
   const updatedFileIDs = workspace.fileIDs;
   const updatedFileIDdocs = workspace.fileIDdocs;
+  console.log(`workspace ids ${updatedFileIDs}`);
   if (workspace) {
-    if (fileID > -1) {
-      updatedFileIDs.splice(fileID, 1);
-      updatedFileIDdocs.splice(fileID, 1);
+    const fileIndex = workspace.fileIDs.indexOf(fileID);
+    if (fileIndex > -1) {
+      console.log(`Deleting fileID ${fileID} at index ${fileIndex}`);
+     updatedFileIDs.splice(fileIndex, 1);
+      console.log(`workspace ids after slice ${updatedFileIDs}`);
+      updatedFileIDdocs.splice(fileIndex, 1);
+      //delete workspace.fileIDs[fileID];
       await store.put(workspace);
       await tx.done;
     } else {

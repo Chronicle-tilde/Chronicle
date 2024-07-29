@@ -27,15 +27,17 @@ const Workspace = () => {
   const [username, setUsername] = useState('');
   const [filename, setFileName] = useState('');
   const [documentID, setDocumentID] = useState('');
+
   // const [filesList, setFilesList] = useState(workspace && workspace.docs
   //   ? Object.keys(workspace.fileIDs).map((fileName) => ({ id: fileName, name: fileName }))
   //   : []
   // )
-  const filesList =
-    workspace && workspace.docs
-      ? Object.keys(workspace.fileIDs).map((docID) => ({ id: docID, name: docID }))
-      : [];
 
+  // const filesList =
+  //   workspace && workspace.docs
+  //     ? Object.keys(workspace.fileIDs).map((docID) => ({ id: docID, name: docID }))
+  //     : [];
+const[filesList,setfilesList]=useState([]);
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     setUsername(storedUsername || '');
@@ -43,12 +45,17 @@ const Workspace = () => {
       const workspaces = await getStoredWorkspaces();
       const currentWorkspace = workspaces.find((ws) => ws.id === id);
       if (currentWorkspace) {
+        console.log('has currebt workspace')
         const doc = await loadDocFromWorkspace(id);
-        const docs = currentWorkspace.docs || {};
+        const docs = currentWorkspace.fileIDs || {};
+        console.log(docs);
         setWorkspace({ ...currentWorkspace, docs, doc });
         setCurrentFile(Object.keys(docs)[0] || '');
-        //setFilesList(Object.keys(docs).map((fileName) => ({ id: docs[fileName], name: fileName })));
-      } else {
+        setfilesList(Object.keys(docs).map((fileName) => ({
+          id: docs[fileName],
+          name: fileName
+        })));
+      }else {
         setWorkspace({ docs: {} });
       }
     }
@@ -64,14 +71,14 @@ const Workspace = () => {
       const updatedWorkspace = { ...workspace, docs: { ...workspace.docs, [fileName]: docID } };
       setWorkspace(updatedWorkspace);
       setCurrentFile(newFileName);
-      //setFilesList([...filesList, { id: docID, name: docID }])
+      setfilesList([...filesList, { id: docID, name: docID }])
     }
   };
 
   const handleFileDelete = async (fileName) => {
     if (workspace && Array.isArray(workspace.fileIDs)) {
       deleteFileFromWorkspace(id, fileName);
-      //setFilesList(filesList.filter((file) => file.id !== fileName));
+      setfilesList(filesList.filter((file) => file.id !== fileName));
     }
   };
 
