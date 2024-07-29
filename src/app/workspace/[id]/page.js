@@ -10,6 +10,7 @@ import {
   FilesMobileSidebar,
 } from '../../../components/Sidebar_Files';
 import Navbar from '../../../components/navbar';
+import * as Y from 'yjs';
 
 import {
   getStoredWorkspaces,
@@ -24,16 +25,20 @@ const Workspace = () => {
   const [currentFile, setCurrentFile] = useState('');
   const [ydocs, setYdocs] = useState(new Map());
   const [username, setUsername] = useState('');
-
-  const [filesList, setFilesList] = useState(workspace && workspace.docs
-    ? Object.keys(workspace.fileIDs).map((fileName) => ({ id: fileName, name: fileName }))
-    : []
-  )
+  const [filename, setFileName] = useState('');
+  const [documentID, setDocumentID] = useState('');
+  // const [filesList, setFilesList] = useState(workspace && workspace.docs
+  //   ? Object.keys(workspace.fileIDs).map((fileName) => ({ id: fileName, name: fileName }))
+  //   : []
+  // )
+  const filesList =
+    workspace && workspace.docs
+      ? Object.keys(workspace.fileIDs).map((docID) => ({ id: docID, name: docID }))
+      : [];
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     setUsername(storedUsername || '');
-
     async function fetchWorkspace() {
       const workspaces = await getStoredWorkspaces();
       const currentWorkspace = workspaces.find((ws) => ws.id === id);
@@ -42,7 +47,7 @@ const Workspace = () => {
         const docs = currentWorkspace.docs || {};
         setWorkspace({ ...currentWorkspace, docs, doc });
         setCurrentFile(Object.keys(docs)[0] || '');
-        setFilesList(Object.keys(docs).map((fileName) => ({ id: docs[fileName], name: fileName })));
+        //setFilesList(Object.keys(docs).map((fileName) => ({ id: docs[fileName], name: fileName })));
       } else {
         setWorkspace({ docs: {} });
       }
@@ -55,21 +60,25 @@ const Workspace = () => {
     if (workspace && workspace.docs) {
       const newFileName = `untitled-${Object.keys(workspace.docs).length + 1}.md`;
       const { fileName, docID } = await addFileToWorkspace(id, newFileName);
+      setDocumentID(docID);
       const updatedWorkspace = { ...workspace, docs: { ...workspace.docs, [fileName]: docID } };
       setWorkspace(updatedWorkspace);
       setCurrentFile(newFileName);
-      setFilesList([...filesList, { id: docID, name: docID }])
+      //setFilesList([...filesList, { id: docID, name: docID }])
     }
   };
 
   const handleFileDelete = async (fileName) => {
     if (workspace && Array.isArray(workspace.fileIDs)) {
-      console.log('Deleting file:', fileName);
       deleteFileFromWorkspace(id, fileName);
-      setFilesList(filesList.filter((file) => file.id !== fileName));
+      //setFilesList(filesList.filter((file) => file.id !== fileName));
     }
   };
 
+  const handleFileClick = (filename) => {
+    console.log(filename);
+    console.log(documentID);
+  };
   return (
     <FilesSidebarProvider buttonText="Add File" onButtonClick={addFile}>
       <div className="flex h-screen flex-col">
@@ -77,11 +86,19 @@ const Workspace = () => {
         <div className="flex flex-1">
           {workspace && workspace.docs && (
             <>
-              <FilesDesktopSidebar files={filesList} onDeleteFile={handleFileDelete} />
-              <FilesMobileSidebar files={filesList} onDeleteFile={handleFileDelete} />
+              <FilesDesktopSidebar
+                files={filesList}
+                onDeleteFile={handleFileDelete}
+                onCurrentFileClick={handleFileClick}
+              />
+              <FilesMobileSidebar
+                files={filesList}
+                onDeleteFile={handleFileDelete}
+                onCurrentFileClick={handleFileClick}
+              />
             </>
           )}
-          <Editor currentFile={currentFile} ydocs={ydocs} setYdocs={setYdocs} workspaceID={id} />
+          <Editor fileID={filename} />
         </div>
       </div>
     </FilesSidebarProvider>

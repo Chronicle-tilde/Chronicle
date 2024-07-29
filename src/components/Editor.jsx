@@ -2,27 +2,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
-import { TiptapExtensions } from './tiptapExtensions';
+import { ydoc, provider, TiptapExtensions } from './tiptapExtensions';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import * as Y from 'yjs';
 import { WebrtcProvider } from 'y-webrtc';
 
-
-
-
-const Editor = ({ currentFile, ydocs, setYdocs, workspaceID, docID, username }) => {
-  const [markdownContent, setMarkdownContent] = useState('');
-
-  //TODO: PUT YOUR Y DOC FROM IDB OR WHEREVER YOU'RE GETTING IT HERE
+const Editor = ({ docID, fileID }) => {
   const ydoc = new Y.Doc();
-
-  //TODO: REPLACE ROOM ID WITH FILE ID HERE
-  const provider = new WebrtcProvider('Chronicle R-1', ydoc, {
+  const provider = new WebrtcProvider(fileID, ydoc, {
     signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
   });
-
-
+  const [markdownContent, setMarkdownContent] = useState('');
   const editor = useEditor({
     extensions: [
       ...TiptapExtensions,
@@ -32,12 +23,11 @@ const Editor = ({ currentFile, ydocs, setYdocs, workspaceID, docID, username }) 
       CollaborationCursor.configure({
         provider: provider,
         user: {
-          name: username,
-          color: '#484848',
+          name: 'Anonymous',
+          color: '#565758',
         },
       }),
     ],
-    content: '<h1>Hello Chronicle!</h1><h2>A real-time markdown editor</h2>',
     onUpdate: ({ editor }) => {
       setMarkdownContent(editor.getHTML());
     },
@@ -50,21 +40,17 @@ const Editor = ({ currentFile, ydocs, setYdocs, workspaceID, docID, username }) 
         localStorage.setItem(docID, content);
       }
     };
-
     window.addEventListener('beforeunload', saveContent);
-
     const savedContent = localStorage.getItem(docID);
     if (savedContent) {
       editor?.commands.setContent(savedContent);
     }
-
     return () => {
       window.removeEventListener('beforeunload', saveContent);
     };
   }, [editor, docID]);
-
   return (
-    <div className="w-full h-full markdown-editor tiptap">
+    <div className="markdown-editor tiptap h-full w-full">
       <EditorContent editor={editor} />
     </div>
   );

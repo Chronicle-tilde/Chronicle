@@ -17,7 +17,7 @@ const getDB = async (dbName) => {
 const addWorkspace = async (workspaceID, username) => {
   const db = await getDB(workspaceID);
   const doc = new Y.Doc();
-  const docID = `file-${nanoid(7)}`;
+  const docID = nanoid(7);
   const yarray = doc.getArray('untitled-1.md');
   yarray.push([docID]);
   const tx = db.transaction(['metadata'], 'readwrite');
@@ -25,8 +25,8 @@ const addWorkspace = async (workspaceID, username) => {
   await store.put({
     id: workspaceID,
     username,
-    fileIDs: [docID], 
-    fileIDdocs: [doc.toJSON()], 
+    fileIDs: [docID],
+    fileIDdocs: [doc.toJSON()],
   });
   await tx.done;
   return workspaceID;
@@ -43,7 +43,6 @@ const getStoredWorkspaces = async () => {
         const tx = dbInstance.transaction(['metadata'], 'readonly');
         const store = tx.objectStore('metadata');
         const workspace = await store.get(dbName);
-
         if (workspace) {
           workspaces.push({
             id: dbName,

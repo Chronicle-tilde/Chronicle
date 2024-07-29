@@ -57,10 +57,11 @@ export const FilesSidebarProvider = ({
 };
 
 /// Desktop sidebar component for file management
-export const FilesDesktopSidebar = ({ files = [], onDeleteFile, ...props }) => {
+// sidebar_files.jsx
+export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileClick, ...props }) => {
   const { open, animate, buttonText, onButtonClick } = useFilesSidebar();
   const safeFiles = Array.isArray(files) ? files : [];
-  
+
   return (
     <motion.div
       className="hidden h-full w-[300px] flex-shrink-0 bg-neutral-100 px-4 py-4 md:flex md:flex-col dark:bg-neutral-800"
@@ -73,12 +74,16 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, ...props }) => {
             key={file.id}
             className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600"
           >
-            <Link href={`#`} className="flex items-center gap-2">
+            <a
+              href="#"
+              onClick={() => onCurrentFileClick(file.name)}
+              className="flex items-center gap-2"
+            >
               <DocumentIcon className="h-5 w-5 text-neutral-700 dark:text-neutral-200" />
               {open && (
                 <span className="text-sm text-neutral-700 dark:text-neutral-200">{file.name}</span>
               )}
-            </Link>
+            </a>
             {open && (
               <button
                 onClick={() => onDeleteFile(file.id)}
@@ -100,11 +105,12 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, ...props }) => {
   );
 };
 
-
 // Mobile sidebar component for file management
-export const FilesMobileSidebar = ({ files = [], onDeleteFile, ...props }) => {
+// sidebar_files.jsx
+export const FilesMobileSidebar = ({ files = [], onDeleteFile, onCurrentFileClick, ...props }) => {
   const { open, setOpen, buttonText, onButtonClick } = useFilesSidebar();
   const safeFiles = Array.isArray(files) ? files : [];
+
   return (
     <div
       className="flex h-10 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800"
@@ -137,17 +143,21 @@ export const FilesMobileSidebar = ({ files = [], onDeleteFile, ...props }) => {
                   key={file.id}
                   className="flex items-center justify-between py-2 hover:bg-gray-700 dark:hover:bg-gray-600"
                 >
-                  <Link href={`#`} className="flex items-center gap-2">
+                  <a
+                    href="#"
+                    onClick={() => onCurrentFileClick(file.name)}
+                    className="flex items-center gap-2"
+                  >
                     <DocumentIcon className="h-5 w-5 text-neutral-800 dark:text-neutral-200" />
                     {open && (
                       <span className="text-sm text-neutral-800 dark:text-neutral-200">
                         {file.name}
                       </span>
                     )}
-                  </Link>
+                  </a>
                   {open && (
                     <button
-                      onClick={() => console.log(file.name)}
+                      onClick={() => onDeleteFile(file.id)}
                       className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                     >
                       <TrashIcon className="h-5 w-5" />
