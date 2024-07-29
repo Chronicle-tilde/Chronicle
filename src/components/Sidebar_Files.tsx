@@ -6,6 +6,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { IconMenu2, IconX } from '@tabler/icons-react';
 import { DocumentIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { MdDriveFileRenameOutline } from "react-icons/md";
+
+
 
 // Define the context with default values
 const FilesSidebarContext = createContext({
@@ -84,13 +87,17 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
                 <span className="text-sm text-neutral-700 dark:text-neutral-200">{file.name}</span>
               )}
             </a>
+        
             {open && (
-              <button
-                onClick={() => onDeleteFile(file.id)}
-                className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-              >
-                <TrashIcon className="h-5 w-5" />
-              </button>
+                    <>
+                    <button className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 ml-auto w-auto"><MdDriveFileRenameOutline className="h-5 w-5"/></button>
+                      <button
+                        onClick={() => onDeleteFile(file.id)}
+                          className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                          >
+                      <TrashIcon className="h-5 w-5" />
+                      </button>
+                      </>
             )}
           </div>
         ))}
@@ -156,12 +163,16 @@ export const FilesMobileSidebar = ({ files = [], onDeleteFile, onCurrentFileClic
                     )}
                   </a>
                   {open && (
+                    <>
+                    <button className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 ml-auto w-auto"><MdDriveFileRenameOutline className="h-5 w-5" />
+                    </button>
                     <button
                       onClick={() => onDeleteFile(file.id)}
                       className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                     >
                       <TrashIcon className="h-5 w-5" />
                     </button>
+                    </>
                   )}
                 </div>
               ))}
