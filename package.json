@@ -27,6 +27,7 @@
     "@tiptap/extension-typography": "^2.4.0",
     "@tiptap/react": "^2.5.5",
     "@tiptap/starter-kit": "^2.5.5",
+    "babel": "^6.23.0",
     "clsx": "^2.1.1",
     "concurrency": "^0.1.4",
     "framer-motion": "^11.3.17",
