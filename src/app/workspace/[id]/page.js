@@ -20,12 +20,15 @@ import {
 } from '@/utils/idb';
 
 const Workspace = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // <- YOU GET YOUR WORKSPACE ID HERE
+
+
+
   const [workspace, setWorkspace] = useState(null);
   const [currentFile, setCurrentFile] = useState('');
   const [ydocs, setYdocs] = useState(new Map());
   const [username, setUsername] = useState('');
-  const [filename, setFileName] = useState('');
+  const [fileID, setFileID] = useState('');
   const [documentID, setDocumentID] = useState('');
 
   // const [filesList, setFilesList] = useState(workspace && workspace.docs
@@ -37,28 +40,75 @@ const Workspace = () => {
   //   workspace && workspace.docs
   //     ? Object.keys(workspace.fileIDs).map((docID) => ({ id: docID, name: docID }))
   //     : [];
-const[filesList,setfilesList]=useState([]);
+
+
+
+  const [filesList, setfilesList] = useState([]);
+
+
+
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     setUsername(storedUsername || '');
+
+
     async function fetchWorkspace() {
-      const workspaces = await getStoredWorkspaces();
-      const currentWorkspace = workspaces.find((ws) => ws.id === id);
-      if (currentWorkspace) {
-        console.log('has currebt workspace')
-        const doc = await loadDocFromWorkspace(id);
-        const docs = currentWorkspace.fileIDs || {};
-        const docnames = currentWorkspace.filenames || [];
-        console.log(docs);
-        setWorkspace({ ...currentWorkspace, docs, doc });
-        setCurrentFile(Object.keys(docs)[0] || '');
-        setfilesList(Object.keys(docnames).map((fileIndex => ({
-          id: docs[fileIndex],
-          name: docnames[fileIndex],
-        }))));
-      }else {
-        setWorkspace({ docs: {} });
-      }
+
+      // YOU CAN REUSE THE BELOW CODE TO GET WORKSPACE INFO FROM INDEX DB
+      // const workspaces = await getStoredWorkspaces();
+      // const currentWorkspace = workspaces.find((ws) => ws.id === id);
+      // if (currentWorkspace) {
+      //   console.log('has currebt workspace')
+      //   const doc = await loadDocFromWorkspace(id);
+      //   const docs = currentWorkspace.fileIDs || {};
+      //   const docnames = currentWorkspace.filenames || [];
+      //   console.log(docs);
+      //   setWorkspace({ ...currentWorkspace, docs, doc });
+      //   setCurrentFile(Object.keys(docs)[0] || '');
+      //   setfilesList(Object.keys(docnames).map((fileIndex => ({
+      //     id: docs[fileIndex],
+      //     name: docnames[fileIndex],
+      //   }))));
+      // } else {
+      //   setWorkspace({ docs: {} });
+      // }
+
+
+      // provider = newWebrtcprovider(id, {signalling: ...}) <- `id` here is from useParams in line 23
+      // Get the ydoc from this provider
+      // ydoc = provider.get('workspace') // might not be the correct syntax. Only indicative of what you need to do
+      // fileIDsYArray = ydoc.getarray('fileIDs')
+      // fileNamesYArray = ydoc.get...
+      //
+      // if fileIDsYArray is empty -> push changes to y array from indexed db
+      //
+      //
+      //
+      // You know how to get workspace info from index db because it's implemented above
+      //
+      // else
+      //
+      // tempArray = []
+      // for(i := 0; i < fileIDsYArray.length; i++){
+      // tempArray.push(
+      // {
+      //  id: fileIDsYArray.get(i), 
+      //  name: fileNamesYArray.get(i)})
+      // }
+      // )
+      //
+      //
+      // FLOW:
+      // If you're a person who just created the workspace, Then when you connect to the provider, you won't find any yarray there
+      // so you push stuff from db on to there (which will also be empty)
+      //
+      // If you're a collaborator joining, then when you login to the provider (join the room), you'll find a y array set by someone else there
+      // So you don't touch your indexdb, but fetch the fileIDs and fileNames from webrtc
+      // BUT, remember to put these fileIDs and fileNames in your indexdb, why?
+      //
+      // Because if everyone leaves the webrtc room and comes back later, then someone should have the latest version of the saved data
+      // It's a messy solution but you'll have the same data as the first person that joins the room
+
     }
 
     fetchWorkspace();
@@ -68,6 +118,7 @@ const[filesList,setfilesList]=useState([]);
       const fileIndex = Object.keys(workspace.fileIDs).length + 1
       const newFileName = `untitled-${nanoid(3)}`;
       const { filename, docID } = await addFileToWorkspace(id, newFileName);
+      // ALSO ADD TO THE Y ARRAY HERE
       const updatedWorkspace = { ...workspace, docs: { ...workspace.docs, [fileIndex]: docID } };
       setWorkspace(updatedWorkspace);
       setCurrentFile(newFileName);
@@ -77,13 +128,15 @@ const[filesList,setfilesList]=useState([]);
   const handleFileDelete = async (fileName) => {
     if (workspace && Array.isArray(workspace.fileIDs)) {
       deleteFileFromWorkspace(id, fileName);
+      // ALSO DELETE FROM Y ARRAY
       console.log(`hello i am ${fileName}`);
       setfilesList(filesList.filter((file) => file.id !== fileName));
     }
   };
 
-  const handleFileClick = (filename) => {
-    console.log(filename);
+  const handleFileClick = (fileID) => {
+    console.log(fileID);
+    setFileID(fileID);
   };
 
   return (
@@ -97,7 +150,7 @@ const[filesList,setfilesList]=useState([]);
                 files={filesList}
                 onDeleteFile={handleFileDelete}
                 onCurrentFileClick={handleFileClick}
-                //workspaceID={currentWorkspace}
+              //workspaceID={currentWorkspace}
               />
               <FilesMobileSidebar
                 files={filesList}
@@ -106,7 +159,7 @@ const[filesList,setfilesList]=useState([]);
               />
             </>
           )}
-          <Editor fileID={filename} />
+          <Editor fileID={fileID} />
         </div>
       </div>
     </FilesSidebarProvider>

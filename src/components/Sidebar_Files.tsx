@@ -14,10 +14,10 @@ import { useParams } from 'next/navigation';
 // Define the context with default values
 const FilesSidebarContext = createContext({
   open: false,
-  setOpen: (p0?: boolean) => {},
+  setOpen: (p0?: boolean) => { },
   animate: true,
   buttonText: 'Add File',
-  onButtonClick: () => {},
+  onButtonClick: () => { },
 });
 
 // Custom hook to use the FilesSidebar context
@@ -38,7 +38,7 @@ export const FilesSidebarProvider = ({
   setOpen: setOpenProp,
   animate = true,
   buttonText = 'Add File',
-  onButtonClick = () => {},
+  onButtonClick = () => { },
 }) => {
   const [openState, setOpenState] = useState(openProp || false);
 
@@ -76,7 +76,7 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
     console.log(newName);
   };
 
-  const handleConfirmRename = async(fileId) => {
+  const handleConfirmRename = async (fileId) => {
     setRenamingFileId(null);
     console.log(newName);
     console.log(fileId);
@@ -85,7 +85,7 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
     const wrs = await getStoredWorkspaces();
     const currentWorkspace = wrs.find((ws) => ws.id === id);
     console.log(currentWorkspace);
-    const workspaceID=currentWorkspace.id;
+    const workspaceID = currentWorkspace.id;
     console.log(workspaceID);
 
     if (currentWorkspace) {
@@ -94,20 +94,20 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
       if (currentWorkspace && currentWorkspace.filenames) {
         const fileIndex = currentWorkspace.fileIDs.indexOf(fileId);
         console.log(fileIndex);
-    
+
         if (fileIndex !== -1) {
           currentWorkspace.filenames[fileIndex] = newName
           console.log(currentWorkspace);
           await saveUpdatedWorkspace(currentWorkspace);
+        }
+      }
     }
-  }
-}
   }
 
   const saveUpdatedWorkspace = async (currentWorkspace) => {
     const db = await getDB(currentWorkspace.id);
     const tx = db.transaction(['metadata'], 'readwrite');
-    const store = tx.objectStore('metadata'); 
+    const store = tx.objectStore('metadata');
     console.log("sending fn");
     console.log(currentWorkspace);
     console.log(currentWorkspace.id);
@@ -138,7 +138,7 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
                   className="border p-1 mr-2 w-40 h-9 text-black"
                 />
                 <button
-                  onClick={()=>handleConfirmRename(file.id)}
+                  onClick={() => handleConfirmRename(file.id)}
                   className="bg-[#1c1c1c] hover:bg-slate-900 text-white px-2 py-1 rounded"
                 >
                   Rename
@@ -147,7 +147,7 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
             ) : (
               <>
                 <a
-                  onClick={() => onCurrentFileClick(file.name)}
+                  onClick={() => onCurrentFileClick(file.id)}
                   className="flex items-center gap-2"
                 >
                   <DocumentIcon className="h-5 w-5 text-neutral-700 dark:text-neutral-200" />
