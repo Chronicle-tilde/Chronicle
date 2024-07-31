@@ -1,6 +1,7 @@
 import { openDB } from 'idb';
 import * as Y from 'yjs';
 import { nanoid } from 'nanoid';
+import { WebrtcProvider } from 'y-webrtc';
 
 const DATABASE_VERSION = 1;
 
@@ -14,7 +15,18 @@ const getDB = async (dbName) => {
   });
 };
 
-const addWorkspace = async (workspaceID, username) => {
+
+  export async function setupwsforsharing(currentWorkspace) {
+    const wsDoc = new Y.Doc();
+    // const docIDs = wsDoc.getArray('FileIDs');
+    // const docNames = wsDoc.getArray('filenames');
+      const workspaceProvider = new WebrtcProvider(currentWorkspace, wsDoc, {
+        signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
+      });
+      return { wsDoc, workspaceProvider };
+  }
+
+const addWorkspace = async (workspaceID) => {
   const db = await getDB(workspaceID);
   const doc = new Y.Doc();
   const docID = nanoid(7);
@@ -25,12 +37,12 @@ const addWorkspace = async (workspaceID, username) => {
   const store = tx.objectStore('metadata');
   await store.put({
     id: workspaceID,
-    username,
     fileIDs: [docID],
     fileIDdocs: [doc.toJSON()],
     filenames: [newFileName],
   });
   await tx.done;
+  setupwsforsharing(workspaceID);
   return workspaceID;
 };
 
@@ -78,10 +90,10 @@ const addFileToWorkspace = async (workspaceID, fileName) => {
     throw new Error(`Workspace with ID ${workspaceID} not found`);
   }
   if (!Array.isArray(workspace.fileIDs)) {
-    workspace.fileIDs = [];
+    workspace.fileIDs = new Y.Array();
   }
   if (!Array.isArray(workspace.fileIDdocs)) {
-    workspace.fileIDdocs = [];
+    workspace.fileIDdocs = new Y.Array();
   }
   workspace.fileIDs.push(docID);
   workspace.fileIDdocs.push(doc.toJSON());

@@ -9,6 +9,7 @@ import { useFilesSidebar } from './Sidebar_Files';
 import { initializeWorkspace } from '@/utils/receiversend';
 import { useState } from 'react';
 import {setupws,joinws} from '../utils/receiversend';
+import { setupwsforsharing } from '@/utils/idb';
 
 const Navbar = () => {
   const router = useRouter();
@@ -31,7 +32,7 @@ async function getDB(dbName) {
 console.log(`hohoho ${wsID}`);
   const sendCollab = async() =>{
     //const db= await getDB(wsID);
-    setupws(wsID);
+    setupwsforsharing(wsID);
   }
   const receiveCollab = async()=>{
     joinws(wsID);

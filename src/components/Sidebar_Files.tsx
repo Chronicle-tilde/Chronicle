@@ -138,7 +138,7 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
                   className="border p-1 mr-2 w-40 h-9 text-black"
                 />
                 <button
-                  onClick={() => handleConfirmRename(file.id)}
+                  onClick={() => handleConfirmRename(file.name)}
                   className="bg-[#1c1c1c] hover:bg-slate-900 text-white px-2 py-1 rounded"
                 >
                   Rename
@@ -147,7 +147,7 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
             ) : (
               <>
                 <a
-                  onClick={() => onCurrentFileClick(file.id)}
+                  onClick={() => onCurrentFileClick(file.name)}
                   className="flex items-center gap-2"
                 >
                   <DocumentIcon className="h-5 w-5 text-neutral-700 dark:text-neutral-200" />
