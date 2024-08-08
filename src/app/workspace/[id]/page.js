@@ -17,8 +17,8 @@ import {
   addFileToWorkspace,
   deleteFileFromWorkspace,
   loadDocFromWorkspace,
-  getDB
 } from '../../../utils/idb';
+import { getDB } from '@/utils/receiversend';
 import { WebrtcProvider } from 'y-webrtc';
 
 // Define the Workspace component
@@ -46,10 +46,24 @@ const Workspace = () => {
   const [filesList, setFilesList] = useState([]);
   const[fidya,setfidya]=useState([]);
   const[nidya,setnidya]=useState([]);
+
+
+//   let wsydoc,provider;
+// useEffect(()=>{
+//   wsydoc= new Y.Doc();
+//   provider = new WebrtcProvider(id, wsydoc, {
+//     signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
+//   });
+// },[]);
+
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     setUsername(storedUsername || '');
-
+    
+  const wsydoc= new Y.Doc();
+  const provider = new WebrtcProvider(id, wsydoc, {
+    signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
+  });
     // async function fetchWorkspace() {
     //   YOU CAN REUSE THE BELOW CODE TO GET WORKSPACE INFO FROM INDEX DB
     //   const workspaces = await getStoredWorkspaces();
@@ -69,10 +83,6 @@ const Workspace = () => {
     //   } else {
     //     setWorkspace({ docs: {} });
     //   }
-    const wsydoc= new Y.Doc();
-    const provider = new WebrtcProvider(id, wsydoc, {
-      signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
-    });
     //const wsydoc = provider.get(id); // returns the Yjs doc for that workspace ID
     console.log(wsydoc);
   //   // provider = new WebrtcProvider(id, {signaling: ...}) <- `id` here is from useParams in line 23
@@ -80,19 +90,20 @@ const Workspace = () => {
   //  // might not be the correct syntax. Only indicative of what you need to do
     const fileIDsYArray = wsydoc.getArray('fileIDs');
     const fileNamesYArray = wsydoc.getArray('filenames');
-  //   //
+  //   
     const writeIDBtoYarray = async(id)=>{
       const db = await getDB(id);
       const tx = db.transaction(['metadata'], 'readwrite');
       const store = tx.objectStore('metadata');
-      const workspace = await store.get(id);
-      workspace.fileIDs.forEach(ele => {
+      const myworkspace = await store.get(id);
+      console.log(myworkspace);
+      myworkspace.fileIDs.forEach(ele => {
         fileIDsYArray.push([ele]);
       });
-      workspace.filenames.forEach(ele => {
+      myworkspace.filenames.forEach(ele => {
         fileNamesYArray.push([ele]);
       });
-      await store.put(workspace);
+      await store.put(myworkspace);
       await tx.done;
     }
     
@@ -117,7 +128,8 @@ const Workspace = () => {
     }
     else{
       // logic to fetch files from webRTC
-      const datab=addws();
+      //upsert - update + insert
+      //const datab=addws();
       // const tempArray = [];
       // for(let i=0;i<fileIDsYArray.length;i++){
       //   tempArray.push(
@@ -126,14 +138,14 @@ const Workspace = () => {
       //       name: fileNamesYArray.get(i)
       //     })
       // }
-      fileIDsYArray.forEach(ele => {
-        datab.fileIDs.push([ele]);
-      });
-      fileNamesYArray.forEach(ele => {
-        datab.filenames.push([ele]);
-      });
-      setfidya(fileIDsYArray);
-      setnidya(fileNamesYArray);
+      // fileIDsYArray.forEach(ele => {
+      //   datab.fileIDs.push([ele]);
+      // });
+      // fileNamesYArray.forEach(ele => {
+      //   datab.filenames.push([ele]);
+      // });
+      // setfidya(fileIDsYArray);
+      // setnidya(fileNamesYArray);
     }
   //   // if fileIDsYArray is empty -> push changes to y array from indexed db
   //   //
@@ -167,7 +179,7 @@ const Workspace = () => {
 
   //   // fetchWorkspace();
   }, [id]);
-
+// camel-case or snake-case
   const addFile = async () => {
     if (workspace && workspace.fileIDs) {
       const fileIndex = Object.keys(workspace.fileIDs).length + 1;

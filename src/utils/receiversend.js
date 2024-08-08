@@ -81,21 +81,15 @@ export async function getDB(dbName) {
   });
 }
 
-// Create WebRTC provider for real-time collaboration
-function createWorkspaceProvider(workspaceID, yDoc) {
-  return new WebrtcProvider(workspaceID, yDoc, {
-    signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
-  });
-}
-
 // currentWorkspace is 'workspace-wkdJX8d'
 export async function setupwsforsharing(currentWorkspace) {
-  console.log(`this is ${currentWorkspace}`);
   const wsDoc = new Y.Doc();
-  const docIDs = wsDoc.getArray('FileIDs');
-  const docNames = wsDoc.getArray('filenames');
-    const workspaceProvider = createWorkspaceProvider(currentWorkspace, wsDoc);
-    return { docIDs, wsDoc, docNames, workspaceProvider };
+  // const docIDs = wsDoc.getArray('FileIDs');
+  // const docNames = wsDoc.getArray('filenames');
+    const workspaceProvider = WebrtcProvider(currentWorkspace, wsDoc, {
+      signaling: ['ws://chroniclesignalling.anuragrao.me:6969'],
+    });
+    return { wsDoc, workspaceProvider };
 }
 //y-text for workspace-name
 //y-map key-value approach
