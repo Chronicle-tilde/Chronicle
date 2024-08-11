@@ -11,7 +11,7 @@ import {
 } from '../../../components/Sidebar_Files';
 import Navbar from '../../../components/navbar';
 import * as Y from 'yjs';
-import { nanoid } from 'nanoid'
+import {nanoid} from 'nanoid'
 import {
   getStoredWorkspaces,
   addFileToWorkspace,
@@ -183,7 +183,7 @@ const Workspace = () => {
   const addFile = async () => {
     if (workspace && workspace.fileIDs) {
       const fileIndex = Object.keys(workspace.fileIDs).length + 1;
-      const newFileName = untitled-${nanoid(3)};
+      const newFileName = `untitled-${ nanoid (3)}`;
       const { filename, docID } = await addFileToWorkspace(id, newFileName);
       // ADD TO YARRAY AS WELL
       fidya.push(docID);
