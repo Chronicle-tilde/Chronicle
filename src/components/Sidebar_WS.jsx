@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 const SidebarContext = createContext({
   open: false,
-  setOpen: (p0?: boolean) => {},
+  setOpen: (p0=false) => {},
   animate: true,
   buttonText: 'Add Workspace',
   onButtonClick: () => {},

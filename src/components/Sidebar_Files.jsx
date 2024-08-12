@@ -7,14 +7,14 @@ import { IconMenu2, IconX } from '@tabler/icons-react';
 import { DocumentIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { MdDriveFileRenameOutline } from 'react-icons/md';
-import Workspace from '../../src/app/workspace/[id]/page';
+import Workspace from '../app/workspace/[id]/page';
 import { getDB } from '@/utils/receiversend';
 import { getStoredWorkspaces } from '@/utils/idb';
 import { useParams } from 'next/navigation';
 // Define the context with default values
 const FilesSidebarContext = createContext({
   open: false,
-  setOpen: (p0?: boolean) => {},
+  setOpen: (p0=false) => {},
   animate: true,
   buttonText: 'Add File',
   onButtonClick: () => {},
@@ -303,3 +303,4 @@ export const FilesMobileSidebar = ({ files = [], onDeleteFile, onCurrentFileClic
     </div>
   );
 };
+
