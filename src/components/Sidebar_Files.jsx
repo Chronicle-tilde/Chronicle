@@ -37,8 +37,10 @@ export const FilesSidebarProvider = ({
   open: openProp,
   setOpen: setOpenProp,
   animate = true,
-  buttonText = 'Add File',
-  onButtonClick = () => {},
+  buttonText,
+  // = 'Add File',
+  onButtonClick,
+  // = () => {},
 }) => {
   const [openState, setOpenState] = useState(openProp || false);
 
@@ -146,7 +148,8 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
               </>
             ) : (
               <>
-                <a
+                <Link href={`/workspace/${id}/${file.id}`} passHref>
+                <div
                   onClick={() => onCurrentFileClick(file.name)}
                   className="flex items-center gap-2"
                 >
@@ -156,7 +159,8 @@ export const FilesDesktopSidebar = ({ files = [], onDeleteFile, onCurrentFileCli
                       {file.name}
                     </span>
                   )}
-                </a>
+                </div>
+                </Link>
                 {open && (
                   <>
                     <button
